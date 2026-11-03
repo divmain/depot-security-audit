@@ -1,0 +1,609 @@
+file	line	method	declared_path	path_expression	computed	prefixes_declared_in_file
+packages/control-plane/app.ts	1196	POST	/api/auth/*	'/api/auth/*'	false	
+packages/control-plane/app.ts	1206	GET	/api/auth/*	'/api/auth/*'	false	
+packages/control-plane/app.ts	1218	GET	/scim/v2/*	'/scim/v2/*'	false	
+packages/control-plane/app.ts	1229	POST	/scim/v2/*	'/scim/v2/*'	false	
+packages/control-plane/app.ts	1240	PUT	/scim/v2/*	'/scim/v2/*'	false	
+packages/control-plane/app.ts	1251	PATCH	/scim/v2/*	'/scim/v2/*'	false	
+packages/control-plane/app.ts	1262	DELETE	/scim/v2/*	'/scim/v2/*'	false	
+packages/control-plane/routes/approvals.ts	178	GET	/api/v1/workspaces/:workspace/approvals	'/api/v1/workspaces/:workspace/approvals'	false	
+packages/control-plane/routes/approvals.ts	267	POST	/api/v1/workspaces/:workspace/approvals	'/api/v1/workspaces/:workspace/approvals'	false	
+packages/control-plane/routes/approvals.ts	520	GET	/api/v1/workspaces/:workspace/approvals/:id	'/api/v1/workspaces/:workspace/approvals/:id'	false	
+packages/control-plane/routes/approvals.ts	617	POST	/api/v1/workspaces/:workspace/approvals/:id/approve	'/api/v1/workspaces/:workspace/approvals/:id/approve'	false	
+packages/control-plane/routes/approvals.ts	1010	POST	/api/v1/workspaces/:workspace/approvals/:id/deny	'/api/v1/workspaces/:workspace/approvals/:id/deny'	false	
+packages/control-plane/routes/asn-snapshot.ts	122	GET	/api/v1/admin/asn-snapshot	'/api/v1/admin/asn-snapshot'	false	
+packages/control-plane/routes/asn-snapshot.ts	145	POST	/api/v1/admin/asn-snapshot/refresh	'/api/v1/admin/asn-snapshot/refresh'	false	
+packages/control-plane/routes/audit-export.ts	166	POST	/api/v1/audit/export	'/api/v1/audit/export'	false	
+packages/control-plane/routes/audit-export.ts	350	GET	/api/v1/audit/export/:jobId	'/api/v1/audit/export/:jobId'	false	
+packages/control-plane/routes/audit-export.ts	408	GET	/api/v1/audit/export/:jobId/download	'/api/v1/audit/export/:jobId/download'	false	
+packages/control-plane/routes/audit-rollout.ts	217	GET	/api/v1/workspaces/:workspace/audit-rollout/simulation-metrics	'/api/v1/workspaces/:workspace/audit-rollout/simulation-metrics'	false	
+packages/control-plane/routes/audit-rollout.ts	383	POST	/api/v1/workspaces/:workspace/audit-rollout/preflight	'/api/v1/workspaces/:workspace/audit-rollout/preflight'	false	
+packages/control-plane/routes/audit-rollout.ts	480	GET	/api/v1/workspaces/:workspace/audit-rollout/remediations	'/api/v1/workspaces/:workspace/audit-rollout/remediations'	false	
+packages/control-plane/routes/audit-stream.ts	126	GET	/stream	'/stream'	false	'/api/v1/audit'
+packages/control-plane/routes/audit.ts	517	GET	/api/v1/audit	'/api/v1/audit'	false	
+packages/control-plane/routes/audit.ts	839	GET	/api/v1/audit/events/:eventId	'/api/v1/audit/events/:eventId'	false	
+packages/control-plane/routes/audit.ts	925	GET	/api/v1/audit/events/:eventId/replay	'/api/v1/audit/events/:eventId/replay'	false	
+packages/control-plane/routes/audit.ts	1166	GET	/api/v1/audit/summary	'/api/v1/audit/summary'	false	
+packages/control-plane/routes/auth-providers.ts	65	GET	/api/v1/auth/providers	'/api/v1/auth/providers'	false	
+packages/control-plane/routes/auth-resolve.ts	85	POST	/api/v1/auth/resolve	'/api/v1/auth/resolve'	false	
+packages/control-plane/routes/bootstrap.ts	224	GET	/api/v1/bootstrap/status	'/api/v1/bootstrap/status'	false	
+packages/control-plane/routes/bootstrap.ts	257	POST	/api/v1/bootstrap	'/api/v1/bootstrap'	false	
+packages/control-plane/routes/break-glass.ts	135	POST	/api/v1/workspaces/:workspace/break-glass	'/api/v1/workspaces/:workspace/break-glass'	false	
+packages/control-plane/routes/bulk-decisions.ts	1622	POST	/api/v1/workspaces/:workspace/dispositions/bulk-release	'/api/v1/workspaces/:workspace/dispositions/bulk-release'	false	
+packages/control-plane/routes/bulk-decisions.ts	1646	POST	/api/v1/workspaces/:workspace/dispositions/bulk-reject	'/api/v1/workspaces/:workspace/dispositions/bulk-reject'	false	
+packages/control-plane/routes/bulk-decisions.ts	1670	POST	/api/v1/workspaces/:workspace/dispositions/bulk-revoke	'/api/v1/workspaces/:workspace/dispositions/bulk-revoke'	false	
+packages/control-plane/routes/bulk-decisions.ts	1694	POST	/api/v1/workspaces/:workspace/approvals/bulk-approve	'/api/v1/workspaces/:workspace/approvals/bulk-approve'	false	
+packages/control-plane/routes/bulk-decisions.ts	1725	POST	/api/v1/workspaces/:workspace/approvals/bulk-deny	'/api/v1/workspaces/:workspace/approvals/bulk-deny'	false	
+packages/control-plane/routes/cache-stats.ts	77	GET	/api/v1/admin/cache-stats	'/api/v1/admin/cache-stats'	false	
+packages/control-plane/routes/circuit-breakers.ts	211	GET	/api/v1/admin/circuit-breakers	'/api/v1/admin/circuit-breakers'	false	
+packages/control-plane/routes/circuit-breakers.ts	235	PUT	/api/v1/admin/circuit-breakers/:class/:key	'/api/v1/admin/circuit-breakers/:class/:key'	false	
+packages/control-plane/routes/circuit-breakers.ts	302	DELETE	/api/v1/admin/circuit-breakers/:class/:key	'/api/v1/admin/circuit-breakers/:class/:key'	false	
+packages/control-plane/routes/cleanup-policies.ts	85	POST	/api/v1/workspaces/:workspace/cleanup-policies	'/api/v1/workspaces/:workspace/cleanup-policies'	false	
+packages/control-plane/routes/cleanup-policies.ts	173	GET	/api/v1/workspaces/:workspace/cleanup-policies	'/api/v1/workspaces/:workspace/cleanup-policies'	false	
+packages/control-plane/routes/cleanup-policies.ts	210	GET	/api/v1/workspaces/:workspace/cleanup-policies/:id	'/api/v1/workspaces/:workspace/cleanup-policies/:id'	false	
+packages/control-plane/routes/cleanup-policies.ts	259	PATCH	/api/v1/workspaces/:workspace/cleanup-policies/:id	'/api/v1/workspaces/:workspace/cleanup-policies/:id'	false	
+packages/control-plane/routes/cleanup-policies.ts	374	DELETE	/api/v1/workspaces/:workspace/cleanup-policies/:id	'/api/v1/workspaces/:workspace/cleanup-policies/:id'	false	
+packages/control-plane/routes/cleanup-policies.ts	441	POST	/api/v1/workspaces/:workspace/cleanup-policies/:id/assign	'/api/v1/workspaces/:workspace/cleanup-policies/:id/assign'	false	
+packages/control-plane/routes/cleanup-policies.ts	558	DELETE	/api/v1/workspaces/:workspace/cleanup-policies/:id/assign/:repoId	'/api/v1/workspaces/:workspace/cleanup-policies/:id/assign/:repoId'	false	
+packages/control-plane/routes/cleanup-runs.ts	153	POST	/api/v1/workspaces/:workspace/repositories/:repo/cleanup/preview	'/api/v1/workspaces/:workspace/repositories/:repo/cleanup/preview'	false	
+packages/control-plane/routes/cleanup-runs.ts	287	POST	/api/v1/workspaces/:workspace/repositories/:repo/cleanup/execute	'/api/v1/workspaces/:workspace/repositories/:repo/cleanup/execute'	false	
+packages/control-plane/routes/cleanup-runs.ts	392	GET	/api/v1/workspaces/:workspace/cleanup-runs	'/api/v1/workspaces/:workspace/cleanup-runs'	false	
+packages/control-plane/routes/cleanup-runs.ts	444	GET	/api/v1/workspaces/:workspace/cleanup-runs/:id	'/api/v1/workspaces/:workspace/cleanup-runs/:id'	false	
+packages/control-plane/routes/cli-distribution.ts	186	GET	/api/v1/cli/manifest	'/api/v1/cli/manifest'	false	
+packages/control-plane/routes/cli-distribution.ts	212	GET	/api/v1/cli/download/:target	'/api/v1/cli/download/:target'	false	
+packages/control-plane/routes/compliance-reports.ts	149	POST	/api/v1/compliance-reports	'/api/v1/compliance-reports'	false	
+packages/control-plane/routes/compliance-reports.ts	318	GET	/api/v1/compliance-reports/:id	'/api/v1/compliance-reports/:id'	false	
+packages/control-plane/routes/compliance-reports.ts	374	GET	/api/v1/compliance-reports/:id/download	'/api/v1/compliance-reports/:id/download'	false	
+packages/control-plane/routes/composer-upstream-sources.ts	155	GET	/api/v1/system/composer-upstream-sources	'/api/v1/system/composer-upstream-sources'	false	
+packages/control-plane/routes/composite-members.ts	98	GET	/api/v1/workspaces/:workspace/repositories/:repo/members	'/api/v1/workspaces/:workspace/repositories/:repo/members'	false	
+packages/control-plane/routes/composite-members.ts	136	PUT	/api/v1/workspaces/:workspace/repositories/:repo/members	'/api/v1/workspaces/:workspace/repositories/:repo/members'	false	
+packages/control-plane/routes/composite-members.ts	331	GET	/api/v1/workspaces/:workspace/repositories/:repo/members/overlap	'/api/v1/workspaces/:workspace/repositories/:repo/members/overlap'	false	
+packages/control-plane/routes/composite-members.ts	382	GET	/api/v1/workspaces/:workspace/repositories/:repo/composites	'/api/v1/workspaces/:workspace/repositories/:repo/composites'	false	
+packages/control-plane/routes/correlation.ts	34	GET	/api/v1/correlation/:id	'/api/v1/correlation/:id'	false	
+packages/control-plane/routes/coverage.ts	51	GET	/api/v1/workspaces/:workspace/coverage	'/api/v1/workspaces/:workspace/coverage'	false	
+packages/control-plane/routes/dashboard-exec-metrics.ts	63	GET	/api/v1/dashboard/exec-metrics	'/api/v1/dashboard/exec-metrics'	false	
+packages/control-plane/routes/dashboard-layout.ts	121	GET	/api/v1/dashboard/layout	'/api/v1/dashboard/layout'	false	
+packages/control-plane/routes/dashboard-layout.ts	161	PUT	/api/v1/dashboard/layout	'/api/v1/dashboard/layout'	false	
+packages/control-plane/routes/dashboard-layout.ts	208	POST	/api/v1/dashboard/layout/reset	'/api/v1/dashboard/layout/reset'	false	
+packages/control-plane/routes/dashboard-team.ts	122	GET	/api/v1/dashboard/team-repo-enforcement	'/api/v1/dashboard/team-repo-enforcement'	false	
+packages/control-plane/routes/dashboard-team.ts	174	GET	/api/v1/dashboard/team-decision-time	'/api/v1/dashboard/team-decision-time'	false	
+packages/control-plane/routes/dashboard-widget-batch.ts	174	GET	/api/v1/dashboard/widgets	'/api/v1/dashboard/widgets'	false	
+packages/control-plane/routes/dashboard-widget-batch.ts	212	POST	/api/v1/dashboard/widgets/data	'/api/v1/dashboard/widgets/data'	false	
+packages/control-plane/routes/dashboard-widgets.ts	120	GET	/api/v1/dashboard/expiring-tokens	'/api/v1/dashboard/expiring-tokens'	false	
+packages/control-plane/routes/dashboard-widgets.ts	155	GET	/api/v1/dashboard/my-repo-enforcement	'/api/v1/dashboard/my-repo-enforcement'	false	
+packages/control-plane/routes/dashboard-widgets.ts	185	GET	/api/v1/dashboard/upstream-status	'/api/v1/dashboard/upstream-status'	false	
+packages/control-plane/routes/dashboard-widgets.ts	216	GET	/api/v1/dashboard/workspace-expiring-tokens	'/api/v1/dashboard/workspace-expiring-tokens'	false	
+packages/control-plane/routes/deployment.ts	39	GET	/api/v1/deployment	'/api/v1/deployment'	false	
+packages/control-plane/routes/dispositions-bootstrap.ts	84	GET	/api/v1/workspaces/:workspace/dispositions/bootstrap	'/api/v1/workspaces/:workspace/dispositions/bootstrap'	false	
+packages/control-plane/routes/dispositions-bootstrap.ts	149	POST	/api/v1/workspaces/:workspace/dispositions/bootstrap	'/api/v1/workspaces/:workspace/dispositions/bootstrap'	false	
+packages/control-plane/routes/dispositions-bootstrap.ts	447	DELETE	/api/v1/workspaces/:workspace/dispositions/bootstrap/:batchId	'/api/v1/workspaces/:workspace/dispositions/bootstrap/:batchId'	false	
+packages/control-plane/routes/dispositions.ts	471	GET	/api/v1/workspaces/:workspace/dispositions	'/api/v1/workspaces/:workspace/dispositions'	false	
+packages/control-plane/routes/dispositions.ts	618	POST	/api/v1/workspaces/:workspace/dispositions	'/api/v1/workspaces/:workspace/dispositions'	false	
+packages/control-plane/routes/dispositions.ts	922	GET	/api/v1/workspaces/:workspace/dispositions/:id	'/api/v1/workspaces/:workspace/dispositions/:id'	false	
+packages/control-plane/routes/dispositions.ts	999	POST	/api/v1/workspaces/:workspace/dispositions/:id/release	'/api/v1/workspaces/:workspace/dispositions/:id/release'	false	
+packages/control-plane/routes/dispositions.ts	1291	POST	/api/v1/workspaces/:workspace/dispositions/:id/reject	'/api/v1/workspaces/:workspace/dispositions/:id/reject'	false	
+packages/control-plane/routes/dispositions.ts	1558	POST	/api/v1/workspaces/:workspace/dispositions/:id/requarantine	'/api/v1/workspaces/:workspace/dispositions/:id/requarantine'	false	
+packages/control-plane/routes/dispositions.ts	1718	DELETE	/api/v1/workspaces/:workspace/dispositions/:id	'/api/v1/workspaces/:workspace/dispositions/:id'	false	
+packages/control-plane/routes/dispositions.ts	1937	GET	/api/v1/workspaces/:workspace/repositories/:repo/dispositions	'/api/v1/workspaces/:workspace/repositories/:repo/dispositions'	false	
+packages/control-plane/routes/docker-token-keyring.ts	109	POST	/api/v1/admin/config/docker-token-keyring/rotate	'/api/v1/admin/config/docker-token-keyring/rotate'	false	
+packages/control-plane/routes/duties.ts	193	GET	/api/v1/workspaces/:workspace/duties	'/api/v1/workspaces/:workspace/duties'	false	
+packages/control-plane/routes/duties.ts	247	PUT	/api/v1/workspaces/:workspace/members/:id/duties/:duty	'/api/v1/workspaces/:workspace/members/:id/duties/:duty'	false	
+packages/control-plane/routes/duties.ts	332	DELETE	/api/v1/workspaces/:workspace/members/:id/duties/:duty	'/api/v1/workspaces/:workspace/members/:id/duties/:duty'	false	
+packages/control-plane/routes/duties.ts	411	PUT	/api/v1/workspaces/:workspace/teams/:teamSlug/duties/:duty	'/api/v1/workspaces/:workspace/teams/:teamSlug/duties/:duty'	false	
+packages/control-plane/routes/duties.ts	494	DELETE	/api/v1/workspaces/:workspace/teams/:teamSlug/duties/:duty	'/api/v1/workspaces/:workspace/teams/:teamSlug/duties/:duty'	false	
+packages/control-plane/routes/elevation-access-review.ts	664	GET	/api/v1/workspaces/:workspace/access-review/campaigns	'/api/v1/workspaces/:workspace/access-review/campaigns'	false	
+packages/control-plane/routes/elevation-access-review.ts	713	GET	/api/v1/workspaces/:workspace/access-review/analytics	'/api/v1/workspaces/:workspace/access-review/analytics'	false	
+packages/control-plane/routes/elevation-access-review.ts	788	GET	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId'	false	
+packages/control-plane/routes/elevation-access-review.ts	828	GET	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items'	false	
+packages/control-plane/routes/elevation-access-review.ts	887	GET	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId'	false	
+packages/control-plane/routes/elevation-access-review.ts	938	GET	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/export	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/export'	false	
+packages/control-plane/routes/elevation-access-review.ts	1068	POST	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/force-close	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/force-close'	false	
+packages/control-plane/routes/elevation-access-review.ts	1154	POST	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId/convert	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId/convert'	false	
+packages/control-plane/routes/elevation-access-review.ts	1393	POST	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId/revoke	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId/revoke'	false	
+packages/control-plane/routes/elevation-access-review.ts	1616	POST	/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId/defer	'/api/v1/workspaces/:workspace/access-review/campaigns/:campaignId/items/:itemId/defer'	false	
+packages/control-plane/routes/elevation-bypass-report.ts	157	GET	/api/v1/workspaces/:workspace/elevations/bypass-report	'/api/v1/workspaces/:workspace/elevations/bypass-report'	false	
+packages/control-plane/routes/elevation-closure.ts	685	POST	/api/v1/workspaces/:workspace/elevations/grants/:grantId/closure/requeue	'/api/v1/workspaces/:workspace/elevations/grants/:grantId/closure/requeue'	false	
+packages/control-plane/routes/elevation-closure.ts	779	GET	/api/v1/workspaces/:workspace/elevations/evidence-bundle	'/api/v1/workspaces/:workspace/elevations/evidence-bundle'	false	
+packages/control-plane/routes/elevation-closure.ts	959	GET	/api/v1/workspaces/:workspace/elevations/grants/:grantId	'/api/v1/workspaces/:workspace/elevations/grants/:grantId'	false	
+packages/control-plane/routes/elevation-closure.ts	1079	GET	/api/v1/workspaces/:workspace/elevations/grants/:grantId/report	'/api/v1/workspaces/:workspace/elevations/grants/:grantId/report'	false	
+packages/control-plane/routes/elevation-closure.ts	1140	GET	/api/v1/workspaces/:workspace/elevations/grants/:grantId/evidence	'/api/v1/workspaces/:workspace/elevations/grants/:grantId/evidence'	false	
+packages/control-plane/routes/elevation-closure.ts	1204	GET	/api/v1/workspaces/:workspace/elevations/grants/:grantId/artifacts/:artifactId	'/api/v1/workspaces/:workspace/elevations/grants/:grantId/artifacts/:artifactId'	false	
+packages/control-plane/routes/elevation-closure.ts	1273	GET	/api/v1/workspaces/:workspace/elevations/:id/report	'/api/v1/workspaces/:workspace/elevations/:id/report'	false	
+packages/control-plane/routes/elevation-closure.ts	1332	GET	/api/v1/workspaces/:workspace/elevations/:id/evidence	'/api/v1/workspaces/:workspace/elevations/:id/evidence'	false	
+packages/control-plane/routes/elevation-closure.ts	1398	GET	/api/v1/workspaces/:workspace/elevations/:id/artifacts/:artifactId	'/api/v1/workspaces/:workspace/elevations/:id/artifacts/:artifactId'	false	
+packages/control-plane/routes/elevation-decisions.ts	1115	POST	/api/v1/workspaces/:workspace/elevations/:id/approve	'/api/v1/workspaces/:workspace/elevations/:id/approve'	false	
+packages/control-plane/routes/elevation-decisions.ts	1657	POST	/api/v1/workspaces/:workspace/elevations/:id/deny	'/api/v1/workspaces/:workspace/elevations/:id/deny'	false	
+packages/control-plane/routes/elevation-decisions.ts	1841	POST	/api/v1/workspaces/:workspace/elevations/bulk-approve	'/api/v1/workspaces/:workspace/elevations/bulk-approve'	false	
+packages/control-plane/routes/elevation-decisions.ts	1875	POST	/api/v1/workspaces/:workspace/elevations/bulk-deny	'/api/v1/workspaces/:workspace/elevations/bulk-deny'	false	
+packages/control-plane/routes/elevation-freeze.ts	193	POST	/api/v1/workspaces/:workspace/elevations/freeze	'/api/v1/workspaces/:workspace/elevations/freeze'	false	
+packages/control-plane/routes/elevation-freeze.ts	413	POST	/api/v1/workspaces/:workspace/elevations/unfreeze	'/api/v1/workspaces/:workspace/elevations/unfreeze'	false	
+packages/control-plane/routes/elevation-grants.ts	311	POST	/api/v1/workspaces/:workspace/elevations/:id/activate	'/api/v1/workspaces/:workspace/elevations/:id/activate'	false	prefix
+packages/control-plane/routes/elevation-grants.ts	455	POST	/api/v1/workspaces/:workspace/elevations/:id/revoke	'/api/v1/workspaces/:workspace/elevations/:id/revoke'	false	prefix
+packages/control-plane/routes/elevation-grants.ts	659	POST	/api/v1/workspaces/:workspace/elevations/:id/complete	'/api/v1/workspaces/:workspace/elevations/:id/complete'	false	prefix
+packages/control-plane/routes/elevation-grants.ts	812	POST	/api/v1/workspaces/:workspace/elevations/:id/token	'/api/v1/workspaces/:workspace/elevations/:id/token'	false	prefix
+packages/control-plane/routes/elevation-handoffs.ts	449	POST	/api/v1/workspaces/:workspace/elevations/:id/handoff	'/api/v1/workspaces/:workspace/elevations/:id/handoff'	false	
+packages/control-plane/routes/elevation-handoffs.ts	569	POST	/api/v1/workspaces/:workspace/elevations/:id/handoff/accept	'/api/v1/workspaces/:workspace/elevations/:id/handoff/accept'	false	
+packages/control-plane/routes/elevation-handoffs.ts	750	POST	/api/v1/workspaces/:workspace/elevations/:id/handoff/decline	'/api/v1/workspaces/:workspace/elevations/:id/handoff/decline'	false	
+packages/control-plane/routes/elevation-handoffs.ts	783	POST	/api/v1/workspaces/:workspace/elevations/:id/handoff/cancel	'/api/v1/workspaces/:workspace/elevations/:id/handoff/cancel'	false	
+packages/control-plane/routes/elevation-settings.ts	506	GET	/api/v1/workspaces/:workspace/settings/elevation	'/api/v1/workspaces/:workspace/settings/elevation'	false	
+packages/control-plane/routes/elevation-settings.ts	547	GET	/api/v1/workspaces/:workspace/settings/elevation/open-grant-counts	'/api/v1/workspaces/:workspace/settings/elevation/open-grant-counts'	false	
+packages/control-plane/routes/elevation-settings.ts	587	PATCH	/api/v1/workspaces/:workspace/settings/elevation	'/api/v1/workspaces/:workspace/settings/elevation'	false	
+packages/control-plane/routes/elevation-standby.ts	299	POST	/api/v1/workspaces/:workspace/elevations/standby	'/api/v1/workspaces/:workspace/elevations/standby'	false	
+packages/control-plane/routes/elevation-standby.ts	499	GET	/api/v1/workspaces/:workspace/elevations/standby	'/api/v1/workspaces/:workspace/elevations/standby'	false	
+packages/control-plane/routes/elevation-standby.ts	620	POST	/api/v1/workspaces/:workspace/elevations/standby/:id/activate	'/api/v1/workspaces/:workspace/elevations/standby/:id/activate'	false	
+packages/control-plane/routes/elevation-standby.ts	1105	POST	/api/v1/workspaces/:workspace/elevations/standby/:id/revoke	'/api/v1/workspaces/:workspace/elevations/standby/:id/revoke'	false	
+packages/control-plane/routes/elevation-standby.ts	1209	POST	/api/v1/workspaces/:workspace/elevations/standby/:id/complete	'/api/v1/workspaces/:workspace/elevations/standby/:id/complete'	false	
+packages/control-plane/routes/elevation-step-up-flow.ts	732	POST	/api/v1/workspaces/:workspace/elevations/step-up-flows	'/api/v1/workspaces/:workspace/elevations/step-up-flows'	false	
+packages/control-plane/routes/elevation-step-up-flow.ts	1011	GET	/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/poll	'/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/poll'	false	
+packages/control-plane/routes/elevation-step-up-flow.ts	1296	POST	/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/complete	'/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/complete'	false	
+packages/control-plane/routes/elevation-step-up-flow.ts	1382	GET	/api/v1/step-up-flows/:flowId	'/api/v1/step-up-flows/:flowId'	false	
+packages/control-plane/routes/elevation-step-up.ts	526	GET	/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId	'/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId'	false	
+packages/control-plane/routes/elevation-step-up.ts	576	POST	/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/proof/password	'/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/proof/password'	false	
+packages/control-plane/routes/elevation-step-up.ts	794	POST	/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/proof/sso	'/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/proof/sso'	false	
+packages/control-plane/routes/elevation-step-up.ts	941	POST	/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/sso-challenge	'/api/v1/workspaces/:workspace/elevations/step-up-flows/:flowId/sso-challenge'	false	
+packages/control-plane/routes/elevation-suspension.ts	70	POST	/api/v1/workspaces/:workspace/elevations/suspended-requesters/:principalId/reinstate	'/api/v1/workspaces/:workspace/elevations/suspended-requesters/:principalId/reinstate'	false	
+packages/control-plane/routes/elevation-transcript.ts	143	GET	/api/v1/workspaces/:workspace/elevations/grants/:grantId/transcript	'/api/v1/workspaces/:workspace/elevations/grants/:grantId/transcript'	false	
+packages/control-plane/routes/elevation-transcript.ts	197	GET	/api/v1/workspaces/:workspace/elevations/:id/transcript	'/api/v1/workspaces/:workspace/elevations/:id/transcript'	false	
+packages/control-plane/routes/elevation-watch.ts	524	GET	/api/v1/workspaces/:workspace/elevations/grants/:grantId/stream	'/api/v1/workspaces/:workspace/elevations/grants/:grantId/stream'	false	
+packages/control-plane/routes/elevation-watch.ts	581	GET	/api/v1/workspaces/:workspace/elevations/:id/stream	'/api/v1/workspaces/:workspace/elevations/:id/stream'	false	
+packages/control-plane/routes/elevation-writer-health.ts	61	POST	/register	'/register'	false	'/_internal/writer-health'
+packages/control-plane/routes/elevation-writer-health.ts	104	POST	/report	'/report'	false	'/_internal/writer-health'
+packages/control-plane/routes/elevation-writer-health.ts	142	POST	/deregister	'/deregister'	false	'/_internal/writer-health'
+packages/control-plane/routes/elevations.ts	856	POST	/api/v1/workspaces/:workspace/elevations	'/api/v1/workspaces/:workspace/elevations'	false	
+packages/control-plane/routes/elevations.ts	1738	GET	/api/v1/workspaces/:workspace/elevations	'/api/v1/workspaces/:workspace/elevations'	false	
+packages/control-plane/routes/elevations.ts	1807	GET	/api/v1/workspaces/:workspace/elevations/:id	'/api/v1/workspaces/:workspace/elevations/:id'	false	
+packages/control-plane/routes/elevations.ts	2042	POST	/api/v1/workspaces/:workspace/elevations/:id/withdraw	'/api/v1/workspaces/:workspace/elevations/:id/withdraw'	false	
+packages/control-plane/routes/entitlement-token.ts	134	POST	/api/v1/workspaces/:workspace/entitlement-tokens	'/api/v1/workspaces/:workspace/entitlement-tokens'	false	prefix
+packages/control-plane/routes/entitlement-token.ts	414	GET	/api/v1/workspaces/:workspace/entitlement-tokens	'/api/v1/workspaces/:workspace/entitlement-tokens'	false	prefix
+packages/control-plane/routes/entitlement-token.ts	475	GET	/api/v1/workspaces/:workspace/entitlement-tokens/:id	'/api/v1/workspaces/:workspace/entitlement-tokens/:id'	false	prefix
+packages/control-plane/routes/entitlement-token.ts	521	DELETE	/api/v1/workspaces/:workspace/entitlement-tokens/:id	'/api/v1/workspaces/:workspace/entitlement-tokens/:id'	false	prefix
+packages/control-plane/routes/event-bus/internal-subscribers.ts	76	GET	/	'/'	false	'/_internal/events'
+packages/control-plane/routes/event-bus/internal-subscribers.ts	198	POST	/emit	'/emit'	false	'/_internal/events'
+packages/control-plane/routes/event-bus/ui-subscribers.ts	473	GET	/stream	'/stream'	false	'/api/v1/events'
+packages/control-plane/routes/event-loss.ts	73	GET	/api/v1/workspaces/:workspace/event-loss-counters	'/api/v1/workspaces/:workspace/event-loss-counters'	false	
+packages/control-plane/routes/event-loss.ts	104	GET	/api/v1/admin/event-loss-counters	'/api/v1/admin/event-loss-counters'	false	
+packages/control-plane/routes/event-loss.ts	126	POST	/api/v1/admin/event-loss-counters/acknowledge	'/api/v1/admin/event-loss-counters/acknowledge'	false	
+packages/control-plane/routes/evidence.ts	73	GET	/api/v1/workspaces/:workspace/evidence/jobs	'/api/v1/workspaces/:workspace/evidence/jobs'	false	
+packages/control-plane/routes/evidence.ts	122	GET	/api/v1/workspaces/:workspace/evidence/inventory	'/api/v1/workspaces/:workspace/evidence/inventory'	false	
+packages/control-plane/routes/fact-push.ts	874	DELETE	/api/v1/fact-push/facts/:name	'/api/v1/fact-push/facts/:name'	false	
+packages/control-plane/routes/fact-push.ts	974	PUT	/api/v1/fact-push/facts/:name	'/api/v1/fact-push/facts/:name'	false	
+packages/control-plane/routes/fact-push.ts	1123	POST	/api/v1/fact-push/values	'/api/v1/fact-push/values'	false	
+packages/control-plane/routes/facts.ts	881	GET	/api/v1/workspaces/:workspace/facts	'/api/v1/workspaces/:workspace/facts'	false	
+packages/control-plane/routes/facts.ts	932	GET	/api/v1/workspaces/:workspace/facts/:name	'/api/v1/workspaces/:workspace/facts/:name'	false	
+packages/control-plane/routes/facts.ts	982	PUT	/api/v1/workspaces/:workspace/facts/:name	'/api/v1/workspaces/:workspace/facts/:name'	false	
+packages/control-plane/routes/facts.ts	1094	DELETE	/api/v1/workspaces/:workspace/facts/:name	'/api/v1/workspaces/:workspace/facts/:name'	false	
+packages/control-plane/routes/facts.ts	1179	PUT	/api/v1/workspaces/:workspace/facts/:name/value	'/api/v1/workspaces/:workspace/facts/:name/value'	false	
+packages/control-plane/routes/facts.ts	1323	DELETE	/api/v1/workspaces/:workspace/facts/:name/value	'/api/v1/workspaces/:workspace/facts/:name/value'	false	
+packages/control-plane/routes/facts.ts	1387	GET	/api/v1/workspaces/:workspace/facts/push-tokens	'/api/v1/workspaces/:workspace/facts/push-tokens'	false	
+packages/control-plane/routes/facts.ts	1428	POST	/api/v1/workspaces/:workspace/facts/push-tokens	'/api/v1/workspaces/:workspace/facts/push-tokens'	false	
+packages/control-plane/routes/facts.ts	1562	PUT	/api/v1/workspaces/:workspace/facts/push-tokens/:id	'/api/v1/workspaces/:workspace/facts/push-tokens/:id'	false	
+packages/control-plane/routes/facts.ts	1647	POST	/api/v1/workspaces/:workspace/facts/push-tokens/:id/rotate	'/api/v1/workspaces/:workspace/facts/push-tokens/:id/rotate'	false	
+packages/control-plane/routes/facts.ts	1728	DELETE	/api/v1/workspaces/:workspace/facts/push-tokens/:id	'/api/v1/workspaces/:workspace/facts/push-tokens/:id'	false	
+packages/control-plane/routes/global-admins.ts	333	GET	/api/v1/admin/principals/lookup	'/api/v1/admin/principals/lookup'	false	
+packages/control-plane/routes/global-admins.ts	388	PUT	/api/v1/admin/principals/:principalId/global-admin	'/api/v1/admin/principals/:principalId/global-admin'	false	
+packages/control-plane/routes/global-admins.ts	438	DELETE	/api/v1/admin/principals/:principalId/global-admin	'/api/v1/admin/principals/:principalId/global-admin'	false	
+packages/control-plane/routes/global-config.ts	339	GET	/api/v1/admin/config	'/api/v1/admin/config'	false	
+packages/control-plane/routes/global-config.ts	363	GET	/api/v1/admin/config/:key	'/api/v1/admin/config/:key'	false	
+packages/control-plane/routes/global-config.ts	394	PUT	/api/v1/admin/config/:key	'/api/v1/admin/config/:key'	false	
+packages/control-plane/routes/global-config.ts	461	DELETE	/api/v1/admin/config/:key	'/api/v1/admin/config/:key'	false	
+packages/control-plane/routes/health.ts	215	GET	/health	'/health'	false	
+packages/control-plane/routes/health.ts	284	GET	/health/ready	'/health/ready'	false	
+packages/control-plane/routes/health.ts	347	GET	/health/diagnostics	'/health/diagnostics'	false	
+packages/control-plane/routes/held-versions.ts	72	GET	/api/v1/workspaces/:workspace/held-versions	'/api/v1/workspaces/:workspace/held-versions'	false	
+packages/control-plane/routes/identity-notifications.ts	129	GET	/api/v1/identity-notifications/me	'/api/v1/identity-notifications/me'	false	
+packages/control-plane/routes/internal-policies.ts	81	GET	/signed-snapshot	'/signed-snapshot'	false	'/_internal/policy'
+packages/control-plane/routes/invitations.ts	151	GET	/api/v1/invitations/me	'/api/v1/invitations/me'	false	
+packages/control-plane/routes/invitations.ts	201	POST	/api/v1/workspaces/:workspace/invitations/:id/accept	'/api/v1/workspaces/:workspace/invitations/:id/accept'	false	
+packages/control-plane/routes/journey-metrics.ts	317	GET	/api/v1/workspaces/:workspace/journey-metrics/overview	'/api/v1/workspaces/:workspace/journey-metrics/overview'	false	
+packages/control-plane/routes/journey-metrics.ts	385	GET	/api/v1/workspaces/:workspace/journey-metrics/funnel	'/api/v1/workspaces/:workspace/journey-metrics/funnel'	false	
+packages/control-plane/routes/journey-metrics.ts	507	GET	/api/v1/workspaces/:workspace/journey-metrics/timings	'/api/v1/workspaces/:workspace/journey-metrics/timings'	false	
+packages/control-plane/routes/journey-metrics.ts	575	GET	/api/v1/workspaces/:workspace/journey-metrics/abandonments	'/api/v1/workspaces/:workspace/journey-metrics/abandonments'	false	
+packages/control-plane/routes/journey-metrics.ts	643	GET	/api/v1/workspaces/:workspace/journey-metrics/elevation	'/api/v1/workspaces/:workspace/journey-metrics/elevation'	false	
+packages/control-plane/routes/login-flows.ts	183	POST	/api/v1/login-flows	'/api/v1/login-flows'	false	prefix
+packages/control-plane/routes/login-flows.ts	263	GET	/api/v1/login-flows/:flowId	'/api/v1/login-flows/:flowId'	false	prefix
+packages/control-plane/routes/login-flows.ts	326	GET	/api/v1/login-flows/:flowId/poll	'/api/v1/login-flows/:flowId/poll'	false	prefix
+packages/control-plane/routes/login-flows.ts	464	POST	/api/v1/login-flows/:flowId/complete	'/api/v1/login-flows/:flowId/complete'	false	prefix
+packages/control-plane/routes/members.ts	437	POST	/api/v1/workspaces/:workspace/members	'/api/v1/workspaces/:workspace/members'	false	
+packages/control-plane/routes/members.ts	720	GET	/api/v1/workspaces/:workspace/members	'/api/v1/workspaces/:workspace/members'	false	
+packages/control-plane/routes/members.ts	801	GET	/api/v1/workspaces/:workspace/members/:id	'/api/v1/workspaces/:workspace/members/:id'	false	
+packages/control-plane/routes/members.ts	857	PATCH	/api/v1/workspaces/:workspace/members/:id	'/api/v1/workspaces/:workspace/members/:id'	false	
+packages/control-plane/routes/members.ts	994	DELETE	/api/v1/workspaces/:workspace/members/:id	'/api/v1/workspaces/:workspace/members/:id'	false	
+packages/control-plane/routes/members.ts	1159	POST	/api/v1/workspaces/:workspace/members/:id/reactivate	'/api/v1/workspaces/:workspace/members/:id/reactivate'	false	
+packages/control-plane/routes/members.ts	1296	PATCH	/api/v1/workspaces/:workspace/members/:id/password	'/api/v1/workspaces/:workspace/members/:id/password'	false	
+packages/control-plane/routes/members.ts	1419	POST	/api/v1/workspaces/:workspace/members/:id/invite-link	'/api/v1/workspaces/:workspace/members/:id/invite-link'	false	
+packages/control-plane/routes/metrics.ts	159	GET	/api/v1/admin/metrics	'/api/v1/admin/metrics'	false	
+packages/control-plane/routes/metrics.ts	186	GET	/api/v1/admin/metrics/prometheus	'/api/v1/admin/metrics/prometheus'	false	
+packages/control-plane/routes/onboarding.ts	140	POST	/api/v1/onboarding/initial-credential	'/api/v1/onboarding/initial-credential'	false	
+packages/control-plane/routes/package-installers.ts	70	GET	/api/v1/packages/:ecosystem/:name/installers	'/api/v1/packages/:ecosystem/:name/installers'	false	
+packages/control-plane/routes/packages-generic.ts	441	GET	/api/v1/workspaces/:workspace/repositories/:repo/generic/directory	'/api/v1/workspaces/:workspace/repositories/:repo/generic/directory'	false	
+packages/control-plane/routes/packages-generic.ts	516	GET	/api/v1/workspaces/:workspace/repositories/:repo/generic/asset	'/api/v1/workspaces/:workspace/repositories/:repo/generic/asset'	false	
+packages/control-plane/routes/packages.ts	581	GET	/api/v1/packages/:ecosystem/:name	'/api/v1/packages/:ecosystem/:name'	false	
+packages/control-plane/routes/packages.ts	757	GET	/api/v1/packages/:ecosystem/:name/versions	'/api/v1/packages/:ecosystem/:name/versions'	false	
+packages/control-plane/routes/packages.ts	893	GET	/api/v1/packages/:ecosystem/:name/versions/:version	'/api/v1/packages/:ecosystem/:name/versions/:version'	false	
+packages/control-plane/routes/packages.ts	1014	GET	/api/v1/packages/:ecosystem/:name/versions/:version/files	'/api/v1/packages/:ecosystem/:name/versions/:version/files'	false	
+packages/control-plane/routes/packages.ts	1087	GET	/api/v1/packages/:ecosystem/:name/versions/:version/dependencies	'/api/v1/packages/:ecosystem/:name/versions/:version/dependencies'	false	
+packages/control-plane/routes/packages.ts	1181	GET	/api/v1/packages/:ecosystem/:name/security	'/api/v1/packages/:ecosystem/:name/security'	false	
+packages/control-plane/routes/permission-simulation.ts	126	POST	/api/v1/workspaces/:workspace/permissions/simulate	'/api/v1/workspaces/:workspace/permissions/simulate'	false	
+packages/control-plane/routes/policies.ts	178	PUT	/api/v1/workspaces/:workspace/policies/:decisionPoint	'/api/v1/workspaces/:workspace/policies/:decisionPoint'	false	
+packages/control-plane/routes/policies.ts	560	GET	/api/v1/workspaces/:workspace/policies	'/api/v1/workspaces/:workspace/policies'	false	
+packages/control-plane/routes/policies.ts	611	GET	/api/v1/workspaces/:workspace/policies/:decisionPoint	'/api/v1/workspaces/:workspace/policies/:decisionPoint'	false	
+packages/control-plane/routes/policies.ts	677	DELETE	/api/v1/workspaces/:workspace/policies/:decisionPoint	'/api/v1/workspaces/:workspace/policies/:decisionPoint'	false	
+packages/control-plane/routes/policies.ts	854	PUT	/api/v1/workspaces/:workspace/policies/:decisionPoint/opt-out	'/api/v1/workspaces/:workspace/policies/:decisionPoint/opt-out'	false	
+packages/control-plane/routes/policies.ts	1014	DELETE	/api/v1/workspaces/:workspace/policies/:decisionPoint/opt-out	'/api/v1/workspaces/:workspace/policies/:decisionPoint/opt-out'	false	
+packages/control-plane/routes/policy-artifact-keyring.ts	140	POST	/api/v1/admin/config/policy-artifact-keyring/rotate	'/api/v1/admin/config/policy-artifact-keyring/rotate'	false	
+packages/control-plane/routes/policy-artifact-keyring.ts	288	GET	/api/v1/admin/config/policy-artifact-keyring	'/api/v1/admin/config/policy-artifact-keyring'	false	
+packages/control-plane/routes/policy-drafts.ts	138	PUT	/api/v1/workspaces/:workspace/policies/:decisionPoint/draft	'/api/v1/workspaces/:workspace/policies/:decisionPoint/draft'	false	
+packages/control-plane/routes/policy-drafts.ts	286	GET	/api/v1/workspaces/:workspace/policies/:decisionPoint/draft	'/api/v1/workspaces/:workspace/policies/:decisionPoint/draft'	false	
+packages/control-plane/routes/policy-drafts.ts	339	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/clone	'/api/v1/workspaces/:workspace/policies/:decisionPoint/clone'	false	
+packages/control-plane/routes/policy-drafts.ts	530	DELETE	/api/v1/workspaces/:workspace/policies/:decisionPoint/draft	'/api/v1/workspaces/:workspace/policies/:decisionPoint/draft'	false	
+packages/control-plane/routes/policy-evaluate.ts	187	POST	/api/v1/workspaces/:workspace/policies/evaluate	'/api/v1/workspaces/:workspace/policies/evaluate'	false	
+packages/control-plane/routes/policy-history.ts	124	GET	/api/v1/workspaces/:workspace/policies/:decisionPoint/history	'/api/v1/workspaces/:workspace/policies/:decisionPoint/history'	false	
+packages/control-plane/routes/policy-publish-zone.ts	110	GET	/api/v1/workspaces/:workspace/policies/:decisionPoint/pending-publish	'/api/v1/workspaces/:workspace/policies/:decisionPoint/pending-publish'	false	
+packages/control-plane/routes/policy-publish-zone.ts	151	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/pending-publish/confirm	'/api/v1/workspaces/:workspace/policies/:decisionPoint/pending-publish/confirm'	false	
+packages/control-plane/routes/policy-publish-zone.ts	298	DELETE	/api/v1/workspaces/:workspace/policies/:decisionPoint/pending-publish	'/api/v1/workspaces/:workspace/policies/:decisionPoint/pending-publish'	false	
+packages/control-plane/routes/policy-simulate.ts	357	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/simulate	'/api/v1/workspaces/:workspace/policies/:decisionPoint/simulate'	false	
+packages/control-plane/routes/policy-tests.ts	499	GET	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests'	false	
+packages/control-plane/routes/policy-tests.ts	556	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests'	false	
+packages/control-plane/routes/policy-tests.ts	703	PUT	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/:testId	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/:testId'	false	
+packages/control-plane/routes/policy-tests.ts	840	DELETE	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/:testId	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/:testId'	false	
+packages/control-plane/routes/policy-tests.ts	916	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/run	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/run'	false	
+packages/control-plane/routes/policy-tests.ts	1100	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/import	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/import'	false	
+packages/control-plane/routes/policy-tests.ts	1258	GET	/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/export	'/api/v1/workspaces/:workspace/policies/:decisionPoint/tests/export'	false	
+packages/control-plane/routes/preferences.ts	97	GET	/api/v1/preferences/me	'/api/v1/preferences/me'	false	
+packages/control-plane/routes/preferences.ts	136	PATCH	/api/v1/preferences/me	'/api/v1/preferences/me'	false	
+packages/control-plane/routes/promotions.ts	73	POST	/api/v1/workspaces/:workspace/repositories/:repo/promote	'/api/v1/workspaces/:workspace/repositories/:repo/promote'	false	
+packages/control-plane/routes/promotions.ts	175	GET	/api/v1/workspaces/:workspace/repositories/:repo/promotions	'/api/v1/workspaces/:workspace/repositories/:repo/promotions'	false	
+packages/control-plane/routes/promotions.ts	235	GET	/api/v1/workspaces/:workspace/repositories/:repo/promotions/:id	'/api/v1/workspaces/:workspace/repositories/:repo/promotions/:id'	false	
+packages/control-plane/routes/protected-namespaces.ts	530	GET	/api/v1/protected-namespaces/formats	'/api/v1/protected-namespaces/formats'	false	
+packages/control-plane/routes/protected-namespaces.ts	557	GET	/api/v1/workspaces/:workspace/protected-namespaces	'/api/v1/workspaces/:workspace/protected-namespaces'	false	
+packages/control-plane/routes/protected-namespaces.ts	610	GET	/api/v1/workspaces/:workspace/protected-namespaces/coverage	'/api/v1/workspaces/:workspace/protected-namespaces/coverage'	false	
+packages/control-plane/routes/protected-namespaces.ts	641	GET	/api/v1/workspaces/:workspace/protected-namespaces/exposure	'/api/v1/workspaces/:workspace/protected-namespaces/exposure'	false	
+packages/control-plane/routes/protected-namespaces.ts	743	GET	/api/v1/workspaces/:workspace/protected-namespaces/:id	'/api/v1/workspaces/:workspace/protected-namespaces/:id'	false	
+packages/control-plane/routes/protected-namespaces.ts	782	POST	/api/v1/workspaces/:workspace/protected-namespaces	'/api/v1/workspaces/:workspace/protected-namespaces'	false	
+packages/control-plane/routes/protected-namespaces.ts	870	DELETE	/api/v1/workspaces/:workspace/protected-namespaces/:id	'/api/v1/workspaces/:workspace/protected-namespaces/:id'	false	
+packages/control-plane/routes/protected-namespaces.ts	941	PUT	/api/v1/workspaces/:workspace/protected-namespaces/:id/trusted-repositories	'/api/v1/workspaces/:workspace/protected-namespaces/:id/trusted-repositories'	false	
+packages/control-plane/routes/queue-state.ts	169	POST	/api/v1/workspaces/:workspace/dispositions/:id/claim	'/api/v1/workspaces/:workspace/dispositions/:id/claim'	false	
+packages/control-plane/routes/queue-state.ts	265	POST	/api/v1/workspaces/:workspace/dispositions/:id/unclaim	'/api/v1/workspaces/:workspace/dispositions/:id/unclaim'	false	
+packages/control-plane/routes/queue-state.ts	349	POST	/api/v1/workspaces/:workspace/dispositions/:id/snooze	'/api/v1/workspaces/:workspace/dispositions/:id/snooze'	false	
+packages/control-plane/routes/queue-state.ts	438	POST	/api/v1/workspaces/:workspace/dispositions/:id/acknowledge	'/api/v1/workspaces/:workspace/dispositions/:id/acknowledge'	false	
+packages/control-plane/routes/queue-state.ts	524	POST	/api/v1/workspaces/:workspace/approvals/:id/claim	'/api/v1/workspaces/:workspace/approvals/:id/claim'	false	
+packages/control-plane/routes/queue-state.ts	610	POST	/api/v1/workspaces/:workspace/approvals/:id/unclaim	'/api/v1/workspaces/:workspace/approvals/:id/unclaim'	false	
+packages/control-plane/routes/queue-state.ts	678	POST	/api/v1/workspaces/:workspace/approvals/:id/snooze	'/api/v1/workspaces/:workspace/approvals/:id/snooze'	false	
+packages/control-plane/routes/queue-state.ts	762	POST	/api/v1/workspaces/:workspace/approvals/:id/acknowledge	'/api/v1/workspaces/:workspace/approvals/:id/acknowledge'	false	
+packages/control-plane/routes/repo-lifecycle.ts	55	GET	/api/v1/workspaces/:workspace/repositories/:repo/lifecycle	'/api/v1/workspaces/:workspace/repositories/:repo/lifecycle'	false	
+packages/control-plane/routes/repo-privileges.ts	102	PUT	/api/v1/workspaces/:workspace/repositories/:repo/privileges	'/api/v1/workspaces/:workspace/repositories/:repo/privileges'	false	
+packages/control-plane/routes/repo-privileges.ts	264	GET	/api/v1/workspaces/:workspace/repositories/:repo/privileges	'/api/v1/workspaces/:workspace/repositories/:repo/privileges'	false	
+packages/control-plane/routes/repo-privileges.ts	300	DELETE	/api/v1/workspaces/:workspace/repositories/:repo/privileges/:id	'/api/v1/workspaces/:workspace/repositories/:repo/privileges/:id'	false	
+packages/control-plane/routes/repo-privileges.ts	393	GET	/api/v1/workspaces/:workspace/repositories/:repo/effective-privilege/:principalId	'/api/v1/workspaces/:workspace/repositories/:repo/effective-privilege/:principalId'	false	
+packages/control-plane/routes/repo-privileges.ts	609	GET	/api/v1/workspaces/:workspace/privileges	'/api/v1/workspaces/:workspace/privileges'	false	
+packages/control-plane/routes/repo-signing-keys.ts	341	GET	/api/v1/workspaces/:workspace/repositories/:repo/signing-keys	'/api/v1/workspaces/:workspace/repositories/:repo/signing-keys'	false	
+packages/control-plane/routes/repo-signing-keys.ts	385	POST	/api/v1/workspaces/:workspace/repositories/:repo/signing-keys/rotate	'/api/v1/workspaces/:workspace/repositories/:repo/signing-keys/rotate'	false	
+packages/control-plane/routes/repo-signing-keys.ts	563	POST	/api/v1/workspaces/:workspace/repositories/:repo/signing-keys/import	'/api/v1/workspaces/:workspace/repositories/:repo/signing-keys/import'	false	
+packages/control-plane/routes/repo-signing-keys.ts	682	GET	/api/v1/workspaces/:workspace/repositories/:repo/aggregate-indexes	'/api/v1/workspaces/:workspace/repositories/:repo/aggregate-indexes'	false	
+packages/control-plane/routes/repo-upstreams.ts	399	POST	/api/v1/workspaces/:workspace/repositories/:repo/upstreams	'/api/v1/workspaces/:workspace/repositories/:repo/upstreams'	false	
+packages/control-plane/routes/repo-upstreams.ts	823	GET	/api/v1/workspaces/:workspace/repositories/:repo/upstreams	'/api/v1/workspaces/:workspace/repositories/:repo/upstreams'	false	
+packages/control-plane/routes/repo-upstreams.ts	864	GET	/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id	'/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id'	false	
+packages/control-plane/routes/repo-upstreams.ts	908	PATCH	/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id	'/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id'	false	
+packages/control-plane/routes/repo-upstreams.ts	1298	DELETE	/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id	'/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id'	false	
+packages/control-plane/routes/repo-upstreams.ts	1427	POST	/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id/test	'/api/v1/workspaces/:workspace/repositories/:repo/upstreams/:id/test'	false	
+packages/control-plane/routes/repositories.ts	937	POST	/api/v1/workspaces/:workspace/repositories	'/api/v1/workspaces/:workspace/repositories'	false	
+packages/control-plane/routes/repositories.ts	1308	GET	/api/v1/workspaces/:workspace/repositories	'/api/v1/workspaces/:workspace/repositories'	false	
+packages/control-plane/routes/repositories.ts	1461	GET	/api/v1/workspaces/:workspace/repositories/:repo	'/api/v1/workspaces/:workspace/repositories/:repo'	false	
+packages/control-plane/routes/repositories.ts	1567	POST	/api/v1/workspaces/:workspace/repositories/:repo/restore	'/api/v1/workspaces/:workspace/repositories/:repo/restore'	false	
+packages/control-plane/routes/repositories.ts	1794	PATCH	/api/v1/workspaces/:workspace/repositories/:repo	'/api/v1/workspaces/:workspace/repositories/:repo'	false	
+packages/control-plane/routes/repositories.ts	2214	DELETE	/api/v1/workspaces/:workspace/repositories/:repo	'/api/v1/workspaces/:workspace/repositories/:repo'	false	
+packages/control-plane/routes/repositories.ts	2366	GET	/api/v1/workspaces/:workspace/repositories/:repo/policy-overrides	'/api/v1/workspaces/:workspace/repositories/:repo/policy-overrides'	false	
+packages/control-plane/routes/request-detail.ts	935	GET	/api/v1/requests/:requestId	'/api/v1/requests/:requestId'	false	
+packages/control-plane/routes/retention.ts	392	POST	/api/v1/admin/retention/validate	'/api/v1/admin/retention/validate'	false	
+packages/control-plane/routes/retention.ts	446	POST	/api/v1/admin/retention/preview	'/api/v1/admin/retention/preview'	false	
+packages/control-plane/routes/retention.ts	510	GET	/api/v1/admin/retention/ledger	'/api/v1/admin/retention/ledger'	false	
+packages/control-plane/routes/revalidation.ts	133	POST	/acquire	'/acquire'	false	'/_internal/revalidate'
+packages/control-plane/routes/revalidation.ts	210	POST	/release	'/release'	false	'/_internal/revalidate'
+packages/control-plane/routes/revalidation.ts	243	GET	/status/:entityId	'/status/:entityId'	false	'/_internal/revalidate'
+packages/control-plane/routes/runtime-mode.ts	138	GET	/	'/'	false	'/_internal/runtime-mode'
+packages/control-plane/routes/runtime-mode.ts	145	PUT	/	'/'	false	'/_internal/runtime-mode'
+packages/control-plane/routes/runtime-mode.ts	203	GET	/api/v1/admin/runtime-mode	'/api/v1/admin/runtime-mode'	false	'/_internal/runtime-mode'
+packages/control-plane/routes/runtime-mode.ts	226	PUT	/api/v1/admin/runtime-mode	'/api/v1/admin/runtime-mode'	false	'/_internal/runtime-mode'
+packages/control-plane/routes/scim-connections.ts	138	POST	/api/v1/workspaces/:workspace/scim/connections	'/api/v1/workspaces/:workspace/scim/connections'	false	
+packages/control-plane/routes/scim-connections.ts	207	GET	/api/v1/workspaces/:workspace/scim/connections	'/api/v1/workspaces/:workspace/scim/connections'	false	
+packages/control-plane/routes/scim-connections.ts	244	POST	/api/v1/workspaces/:workspace/scim/connections/:id/rotate	'/api/v1/workspaces/:workspace/scim/connections/:id/rotate'	false	
+packages/control-plane/routes/scim-connections.ts	324	DELETE	/api/v1/workspaces/:workspace/scim/connections/:id	'/api/v1/workspaces/:workspace/scim/connections/:id'	false	
+packages/control-plane/routes/scim-groups.ts	388	GET	/scim/v2/Groups	'/scim/v2/Groups'	false	
+packages/control-plane/routes/scim-groups.ts	421	POST	/scim/v2/Groups	'/scim/v2/Groups'	false	
+packages/control-plane/routes/scim-groups.ts	473	GET	/scim/v2/Groups/:id	'/scim/v2/Groups/:id'	false	
+packages/control-plane/routes/scim-groups.ts	486	PUT	/scim/v2/Groups/:id	'/scim/v2/Groups/:id'	false	
+packages/control-plane/routes/scim-groups.ts	559	PATCH	/scim/v2/Groups/:id	'/scim/v2/Groups/:id'	false	
+packages/control-plane/routes/scim-groups.ts	633	DELETE	/scim/v2/Groups/:id	'/scim/v2/Groups/:id'	false	
+packages/control-plane/routes/scim-users.ts	654	GET	/scim/v2/Users	'/scim/v2/Users'	false	
+packages/control-plane/routes/scim-users.ts	685	POST	/scim/v2/Users	'/scim/v2/Users'	false	
+packages/control-plane/routes/scim-users.ts	812	GET	/scim/v2/Users/:id	'/scim/v2/Users/:id'	false	
+packages/control-plane/routes/scim-users.ts	824	PUT	/scim/v2/Users/:id	'/scim/v2/Users/:id'	false	
+packages/control-plane/routes/scim-users.ts	887	PATCH	/scim/v2/Users/:id	'/scim/v2/Users/:id'	false	
+packages/control-plane/routes/scim-users.ts	916	DELETE	/scim/v2/Users/:id	'/scim/v2/Users/:id'	false	
+packages/control-plane/routes/security-overview.ts	73	GET	/api/v1/workspaces/:workspace/security-overview/holds	'/api/v1/workspaces/:workspace/security-overview/holds'	false	
+packages/control-plane/routes/security-posture.ts	162	POST	/api/v1/workspaces/:workspace/security-posture	'/api/v1/workspaces/:workspace/security-posture'	false	
+packages/control-plane/routes/security-posture.ts	352	GET	/api/v1/workspaces/:workspace/security-posture/escalation-status	'/api/v1/workspaces/:workspace/security-posture/escalation-status'	false	
+packages/control-plane/routes/service-accounts.ts	77	POST	/api/v1/workspaces/:workspace/service-accounts	'/api/v1/workspaces/:workspace/service-accounts'	false	
+packages/control-plane/routes/service-accounts.ts	207	GET	/api/v1/workspaces/:workspace/service-accounts	'/api/v1/workspaces/:workspace/service-accounts'	false	
+packages/control-plane/routes/service-accounts.ts	257	GET	/api/v1/workspaces/:workspace/service-accounts/:id	'/api/v1/workspaces/:workspace/service-accounts/:id'	false	
+packages/control-plane/routes/service-accounts.ts	301	DELETE	/api/v1/workspaces/:workspace/service-accounts/:id	'/api/v1/workspaces/:workspace/service-accounts/:id'	false	
+packages/control-plane/routes/session-management.ts	130	GET	/api/v1/sessions/me	'/api/v1/sessions/me'	false	
+packages/control-plane/routes/session-management.ts	201	DELETE	/api/v1/sessions/me	'/api/v1/sessions/me'	false	
+packages/control-plane/routes/session-management.ts	273	DELETE	/api/v1/sessions/:sessionId	'/api/v1/sessions/:sessionId'	false	
+packages/control-plane/routes/session-management.ts	422	DELETE	/api/v1/workspaces/:workspace/sessions	'/api/v1/workspaces/:workspace/sessions'	false	
+packages/control-plane/routes/setup.ts	220	POST	/api/v1/setup/test	'/api/v1/setup/test'	false	
+packages/control-plane/routes/siem.ts	99	POST	/api/v1/workspaces/:workspace/siem-integrations	'/api/v1/workspaces/:workspace/siem-integrations'	false	
+packages/control-plane/routes/siem.ts	153	GET	/api/v1/workspaces/:workspace/siem-integrations	'/api/v1/workspaces/:workspace/siem-integrations'	false	
+packages/control-plane/routes/siem.ts	189	PATCH	/api/v1/workspaces/:workspace/siem-integrations/:id	'/api/v1/workspaces/:workspace/siem-integrations/:id'	false	
+packages/control-plane/routes/siem.ts	237	DELETE	/api/v1/workspaces/:workspace/siem-integrations/:id	'/api/v1/workspaces/:workspace/siem-integrations/:id'	false	
+packages/control-plane/routes/siem.ts	288	POST	/api/v1/workspaces/:workspace/siem-integrations/:id/test	'/api/v1/workspaces/:workspace/siem-integrations/:id/test'	false	
+packages/control-plane/routes/siem.ts	333	GET	/api/v1/workspaces/:workspace/siem-integrations/:id/deliveries	'/api/v1/workspaces/:workspace/siem-integrations/:id/deliveries'	false	
+packages/control-plane/routes/siem.ts	380	POST	/api/v1/workspaces/:workspace/siem-integrations/:id/deliveries/:did/redeliver	'/api/v1/workspaces/:workspace/siem-integrations/:id/deliveries/:did/redeliver'	false	
+packages/control-plane/routes/signals.ts	511	GET	/api/v1/workspaces/:workspace/signals/misses	'/api/v1/workspaces/:workspace/signals/misses'	false	
+packages/control-plane/routes/signals.ts	657	GET	/api/v1/workspaces/:workspace/signals/new	'/api/v1/workspaces/:workspace/signals/new'	false	
+packages/control-plane/routes/signals.ts	769	GET	/api/v1/workspaces/:workspace/signals/velocity	'/api/v1/workspaces/:workspace/signals/velocity'	false	
+packages/control-plane/routes/sla-targets.ts	103	GET	/api/v1/workspaces/:workspace/sla-targets	'/api/v1/workspaces/:workspace/sla-targets'	false	
+packages/control-plane/routes/sla-targets.ts	136	PUT	/api/v1/workspaces/:workspace/sla-targets/:severity	'/api/v1/workspaces/:workspace/sla-targets/:severity'	false	
+packages/control-plane/routes/spa.ts	201	GET	/*	'/*'	false	
+packages/control-plane/routes/sso-providers.ts	578	POST	/api/v1/workspaces/:workspace/sso/providers	'/api/v1/workspaces/:workspace/sso/providers'	false	
+packages/control-plane/routes/sso-providers.ts	739	GET	/api/v1/workspaces/:workspace/sso/providers	'/api/v1/workspaces/:workspace/sso/providers'	false	
+packages/control-plane/routes/sso-providers.ts	772	GET	/api/v1/workspaces/:workspace/sso/providers/:id	'/api/v1/workspaces/:workspace/sso/providers/:id'	false	
+packages/control-plane/routes/sso-providers.ts	811	PATCH	/api/v1/workspaces/:workspace/sso/providers/:id	'/api/v1/workspaces/:workspace/sso/providers/:id'	false	
+packages/control-plane/routes/sso-providers.ts	1149	DELETE	/api/v1/workspaces/:workspace/sso/providers/:id	'/api/v1/workspaces/:workspace/sso/providers/:id'	false	
+packages/control-plane/routes/sso-providers.ts	1225	POST	/api/v1/workspaces/:workspace/sso/providers/:id/test	'/api/v1/workspaces/:workspace/sso/providers/:id/test'	false	
+packages/control-plane/routes/sso-providers.ts	1320	POST	/api/v1/workspaces/:workspace/sso/providers/:id/request-domain-verification	'/api/v1/workspaces/:workspace/sso/providers/:id/request-domain-verification'	false	
+packages/control-plane/routes/sso-providers.ts	1389	POST	/api/v1/workspaces/:workspace/sso/providers/:id/verify-domain	'/api/v1/workspaces/:workspace/sso/providers/:id/verify-domain'	false	
+packages/control-plane/routes/system-siem.ts	97	POST	/api/v1/system/siem-integrations	'/api/v1/system/siem-integrations'	false	
+packages/control-plane/routes/system-siem.ts	136	GET	/api/v1/system/siem-integrations	'/api/v1/system/siem-integrations'	false	
+packages/control-plane/routes/system-siem.ts	167	PATCH	/api/v1/system/siem-integrations/:id	'/api/v1/system/siem-integrations/:id'	false	
+packages/control-plane/routes/system-siem.ts	203	DELETE	/api/v1/system/siem-integrations/:id	'/api/v1/system/siem-integrations/:id'	false	
+packages/control-plane/routes/system-siem.ts	240	POST	/api/v1/system/siem-integrations/:id/test	'/api/v1/system/siem-integrations/:id/test'	false	
+packages/control-plane/routes/system-siem.ts	276	GET	/api/v1/system/siem-integrations/:id/deliveries	'/api/v1/system/siem-integrations/:id/deliveries'	false	
+packages/control-plane/routes/system-siem.ts	314	POST	/api/v1/system/siem-integrations/:id/deliveries/:did/redeliver	'/api/v1/system/siem-integrations/:id/deliveries/:did/redeliver'	false	
+packages/control-plane/routes/teams.ts	211	POST	/api/v1/workspaces/:workspace/teams	'/api/v1/workspaces/:workspace/teams'	false	
+packages/control-plane/routes/teams.ts	305	GET	/api/v1/workspaces/:workspace/teams	'/api/v1/workspaces/:workspace/teams'	false	
+packages/control-plane/routes/teams.ts	408	GET	/api/v1/workspaces/:workspace/teams/:teamSlug	'/api/v1/workspaces/:workspace/teams/:teamSlug'	false	
+packages/control-plane/routes/teams.ts	482	PATCH	/api/v1/workspaces/:workspace/teams/:teamSlug	'/api/v1/workspaces/:workspace/teams/:teamSlug'	false	
+packages/control-plane/routes/teams.ts	557	DELETE	/api/v1/workspaces/:workspace/teams/:teamSlug	'/api/v1/workspaces/:workspace/teams/:teamSlug'	false	
+packages/control-plane/routes/teams.ts	639	POST	/api/v1/workspaces/:workspace/teams/:teamSlug/members	'/api/v1/workspaces/:workspace/teams/:teamSlug/members'	false	
+packages/control-plane/routes/teams.ts	735	DELETE	/api/v1/workspaces/:workspace/teams/:teamSlug/members/:principalId	'/api/v1/workspaces/:workspace/teams/:teamSlug/members/:principalId'	false	
+packages/control-plane/routes/teams.ts	824	PUT	/api/v1/workspaces/:workspace/teams/:teamSlug/idp-mapping	'/api/v1/workspaces/:workspace/teams/:teamSlug/idp-mapping'	false	
+packages/control-plane/routes/teams.ts	936	DELETE	/api/v1/workspaces/:workspace/teams/:teamSlug/idp-mapping	'/api/v1/workspaces/:workspace/teams/:teamSlug/idp-mapping'	false	
+packages/control-plane/routes/templates.ts	164	GET	/api/v1/templates	'/api/v1/templates'	false	
+packages/control-plane/routes/templates.ts	204	GET	/api/v1/templates/:templateId	'/api/v1/templates/:templateId'	false	
+packages/control-plane/routes/templates.ts	243	POST	/api/v1/workspaces/:workspace/policies/:decisionPoint/apply-template	'/api/v1/workspaces/:workspace/policies/:decisionPoint/apply-template'	false	
+packages/control-plane/routes/templates.ts	467	POST	/api/v1/workspaces/:workspace/policies/apply-recommended	'/api/v1/workspaces/:workspace/policies/apply-recommended'	false	
+packages/control-plane/routes/threat-signals.ts	116	POST	/	'/'	false	'/_internal/threat-signal'
+packages/control-plane/routes/tokens.ts	1103	POST	/api/v1/tokens	'/api/v1/tokens'	false	prefix
+packages/control-plane/routes/tokens.ts	1342	GET	/api/v1/tokens	'/api/v1/tokens'	false	prefix
+packages/control-plane/routes/tokens.ts	1405	GET	/api/v1/tokens/:id	'/api/v1/tokens/:id'	false	prefix
+packages/control-plane/routes/tokens.ts	1463	DELETE	/api/v1/tokens/:id	'/api/v1/tokens/:id'	false	prefix
+packages/control-plane/routes/tokens.ts	1579	POST	/api/v1/tokens/:id/unrevoke	'/api/v1/tokens/:id/unrevoke'	false	prefix
+packages/control-plane/routes/trash.ts	203	GET	/api/v1/workspaces/:workspace/repositories/:repo/trash	'/api/v1/workspaces/:workspace/repositories/:repo/trash'	false	
+packages/control-plane/routes/trash.ts	355	POST	/api/v1/workspaces/:workspace/repositories/:repo/trash/:id/restore	'/api/v1/workspaces/:workspace/repositories/:repo/trash/:id/restore'	false	
+packages/control-plane/routes/trash.ts	519	DELETE	/api/v1/workspaces/:workspace/repositories/:repo/trash/:id	'/api/v1/workspaces/:workspace/repositories/:repo/trash/:id'	false	
+packages/control-plane/routes/trusted-publishers.ts	358	POST		BASE_PATH	true	
+packages/control-plane/routes/trusted-publishers.ts	571	GET		BASE_PATH	true	
+packages/control-plane/routes/trusted-publishers.ts	635	GET		`${BASE_PATH}/:id`	true	
+packages/control-plane/routes/trusted-publishers.ts	701	DELETE		`${BASE_PATH}/:id`	true	
+packages/control-plane/routes/trusted-publishing-issuer-cas.ts	272	GET		BASE_PATH	true	
+packages/control-plane/routes/trusted-publishing-issuer-cas.ts	297	POST		BASE_PATH	true	
+packages/control-plane/routes/trusted-publishing-issuer-cas.ts	382	PUT		`${BASE_PATH}/:id`	true	
+packages/control-plane/routes/trusted-publishing-issuer-cas.ts	453	DELETE		`${BASE_PATH}/:id`	true	
+packages/control-plane/routes/upstream-universe.ts	410	GET	/api/v1/system/upstream-universe	'/api/v1/system/upstream-universe'	false	
+packages/control-plane/routes/ux-events.ts	191	POST	/api/v1/workspaces/:workspace/ux-events	'/api/v1/workspaces/:workspace/ux-events'	false	
+packages/control-plane/routes/version-compare.ts	309	GET	/api/v1/packages/:ecosystem/:name/compare	'/api/v1/packages/:ecosystem/:name/compare'	false	
+packages/control-plane/routes/webhook.ts	725	POST	/api/v1/workspaces/:workspace/webhooks	'/api/v1/workspaces/:workspace/webhooks'	false	
+packages/control-plane/routes/webhook.ts	943	GET	/api/v1/workspaces/:workspace/webhooks	'/api/v1/workspaces/:workspace/webhooks'	false	
+packages/control-plane/routes/webhook.ts	994	GET	/api/v1/workspaces/:workspace/webhooks/:id	'/api/v1/workspaces/:workspace/webhooks/:id'	false	
+packages/control-plane/routes/webhook.ts	1053	PATCH	/api/v1/workspaces/:workspace/webhooks/:id	'/api/v1/workspaces/:workspace/webhooks/:id'	false	
+packages/control-plane/routes/webhook.ts	1225	DELETE	/api/v1/workspaces/:workspace/webhooks/:id	'/api/v1/workspaces/:workspace/webhooks/:id'	false	
+packages/control-plane/routes/webhook.ts	1313	POST	/api/v1/workspaces/:workspace/webhooks/:id/rotate-secret	'/api/v1/workspaces/:workspace/webhooks/:id/rotate-secret'	false	
+packages/control-plane/routes/webhook.ts	1413	POST	/api/v1/workspaces/:workspace/webhooks/:id/test	'/api/v1/workspaces/:workspace/webhooks/:id/test'	false	
+packages/control-plane/routes/webhook.ts	1521	GET	/api/v1/workspaces/:workspace/webhooks/:id/deliveries	'/api/v1/workspaces/:workspace/webhooks/:id/deliveries'	false	
+packages/control-plane/routes/webhook.ts	1597	GET	/api/v1/workspaces/:workspace/webhooks/:id/deliveries/:did	'/api/v1/workspaces/:workspace/webhooks/:id/deliveries/:did'	false	
+packages/control-plane/routes/webhook.ts	1686	POST	/api/v1/workspaces/:workspace/webhooks/:id/deliveries/:did/redeliver	'/api/v1/workspaces/:workspace/webhooks/:id/deliveries/:did/redeliver'	false	
+packages/control-plane/routes/whoami.ts	45	GET	/api/v1/whoami	'/api/v1/whoami'	false	
+packages/control-plane/routes/work-items.ts	157	GET	/api/v1/workspaces/:workspace/work-items	'/api/v1/workspaces/:workspace/work-items'	false	
+packages/control-plane/routes/work-items.ts	216	PATCH	/api/v1/workspaces/:workspace/work-items/:id	'/api/v1/workspaces/:workspace/work-items/:id'	false	
+packages/control-plane/routes/workspace-selection.ts	247	GET	/api/v1/session/workspaces	'/api/v1/session/workspaces'	false	
+packages/control-plane/routes/workspace-selection.ts	342	POST	/api/v1/session/workspace	'/api/v1/session/workspace'	false	
+packages/control-plane/routes/workspace-socket-api-key.ts	94	GET	/api/v1/workspaces/:workspace/socket-api-key	'/api/v1/workspaces/:workspace/socket-api-key'	false	
+packages/control-plane/routes/workspace-socket-api-key.ts	124	PUT	/api/v1/workspaces/:workspace/socket-api-key	'/api/v1/workspaces/:workspace/socket-api-key'	false	
+packages/control-plane/routes/workspace-socket-api-key.ts	205	DELETE	/api/v1/workspaces/:workspace/socket-api-key	'/api/v1/workspaces/:workspace/socket-api-key'	false	
+packages/control-plane/routes/workspaces.ts	169	GET	/api/v1/workspaces	'/api/v1/workspaces'	false	
+packages/control-plane/routes/workspaces.ts	198	POST	/api/v1/workspaces	'/api/v1/workspaces'	false	
+packages/control-plane/routes/workspaces.ts	276	GET	/api/v1/workspaces/:workspace	'/api/v1/workspaces/:workspace'	false	
+packages/control-plane/routes/workspaces.ts	318	PATCH	/api/v1/workspaces/:workspace	'/api/v1/workspaces/:workspace'	false	
+packages/control-plane/routes/workspaces.ts	678	DELETE	/api/v1/workspaces/:workspace	'/api/v1/workspaces/:workspace'	false	
+packages/control-plane/scim-mount.ts	692	GET	/scim/v2/ServiceProviderConfig	'/scim/v2/ServiceProviderConfig'	false	
+packages/control-plane/scim-mount.ts	697	GET	/scim/v2/ResourceTypes	'/scim/v2/ResourceTypes'	false	
+packages/control-plane/scim-mount.ts	702	GET	/scim/v2/Schemas	'/scim/v2/Schemas'	false	
+packages/registry-api/lib/diagnostics.ts	57	GET	/-/ping	'/-/ping'	false	
+packages/registry-api/lib/format-ping.ts	41	GET		ecosystemPingPath(format)	true	
+packages/registry-api/lib/trusted-publishing.ts	777	GET	/_/oidc/audience	'/_/oidc/audience'	false	
+packages/registry-api/lib/trusted-publishing.ts	821	POST	/_/oidc/mint-token	'/_/oidc/mint-token'	false	
+packages/registry-api/routes/apk/delete.ts	89	DELETE	/:branch/:component/:arch/:filename	'/:branch/:component/:arch/:filename'	false	
+packages/registry-api/routes/apk/download.ts	121	GET	/:branch/:component/:arch/:filename	'/:branch/:component/:arch/:filename'	false	
+packages/registry-api/routes/apk/index-file.ts	216	GET	/:branch/:component/:arch/APKINDEX.tar.gz	'/:branch/:component/:arch/APKINDEX.tar.gz'	false	
+packages/registry-api/routes/apk/index-file.ts	226	GET	/:branch/:component/:arch/Packages.adb	'/:branch/:component/:arch/Packages.adb'	false	
+packages/registry-api/routes/apk/key.ts	102	GET	/key	'/key'	false	
+packages/registry-api/routes/apk/publish.ts	166	PUT	/:branch/:component	'/:branch/:component'	false	
+packages/registry-api/routes/composer/delete.ts	116	DELETE	/packages/*	'/packages/*'	false	
+packages/registry-api/routes/composer/dists.ts	66	GET		DIST_ROUTE_PATTERN	true	
+packages/registry-api/routes/composer/filter-lists.ts	96	GET	/lists/all/summary.json	'/lists/all/summary.json'	false	
+packages/registry-api/routes/composer/list.ts	135	GET	/packages/list.json	'/packages/list.json'	false	
+packages/registry-api/routes/composer/metadata.ts	76	GET		P2_ROUTE_PATTERN	true	
+packages/registry-api/routes/composer/notify.ts	196	POST	/downloads	'/downloads'	false	
+packages/registry-api/routes/composer/providers.ts	63	GET	/providers/:vendor/:package	'/providers/:vendor/:package'	false	
+packages/registry-api/routes/composer/publish.ts	959	PUT	/publish	'/publish'	false	
+packages/registry-api/routes/composer/root-file.ts	118	GET	/packages.json	'/packages.json'	false	
+packages/registry-api/routes/composer/search.ts	162	GET	/search.json	'/search.json'	false	
+packages/registry-api/routes/composer/security-advisories.ts	483	GET	/api/security-advisories/	'/api/security-advisories/'	false	
+packages/registry-api/routes/composer/security-advisories.ts	504	POST	/api/security-advisories/	'/api/security-advisories/'	false	
+packages/registry-api/routes/crates/download.ts	150	GET	/api/v1/crates/:crate_name/:version/download	'/api/v1/crates/:crate_name/:version/download'	false	
+packages/registry-api/routes/crates/download.ts	161	HEAD	/api/v1/crates/:crate_name/:version/download	'/api/v1/crates/:crate_name/:version/download'	false	
+packages/registry-api/routes/crates/index-config.ts	47	GET	/config.json	'/config.json'	false	
+packages/registry-api/routes/crates/index-files.ts	197	GET	/1/:crate_name	'/1/:crate_name'	false	t.String({ minLength: 2, maxLength: 2, pattern: '^[a-zA-Z0-9_-]{2}$', })
+packages/registry-api/routes/crates/index-files.ts	205	GET	/2/:crate_name	'/2/:crate_name'	false	t.String({ minLength: 2, maxLength: 2, pattern: '^[a-zA-Z0-9_-]{2}$', })
+packages/registry-api/routes/crates/index-files.ts	213	GET	/3/:first_char/:crate_name	'/3/:first_char/:crate_name'	false	t.String({ minLength: 2, maxLength: 2, pattern: '^[a-zA-Z0-9_-]{2}$', })
+packages/registry-api/routes/crates/index-files.ts	222	GET	/:prefix/:subprefix/:crate_name	'/:prefix/:subprefix/:crate_name'	false	t.String({ minLength: 2, maxLength: 2, pattern: '^[a-zA-Z0-9_-]{2}$', })
+packages/registry-api/routes/crates/metadata.ts	48	GET	/api/v1/crates/:crate_name	'/api/v1/crates/:crate_name'	false	
+packages/registry-api/routes/crates/metadata.ts	111	GET	/api/v1/crates/:crate_name/:version/dependencies	'/api/v1/crates/:crate_name/:version/dependencies'	false	
+packages/registry-api/routes/crates/metadata.ts	167	GET	/me	'/me'	false	
+packages/registry-api/routes/crates/owners.ts	68	GET	/api/v1/crates/:crate_name/owners	'/api/v1/crates/:crate_name/owners'	false	
+packages/registry-api/routes/crates/owners.ts	102	PUT	/api/v1/crates/:crate_name/owners	'/api/v1/crates/:crate_name/owners'	false	
+packages/registry-api/routes/crates/owners.ts	138	DELETE	/api/v1/crates/:crate_name/owners	'/api/v1/crates/:crate_name/owners'	false	
+packages/registry-api/routes/crates/publish.ts	295	PUT	/api/v1/crates/new	'/api/v1/crates/new'	false	
+packages/registry-api/routes/crates/search.ts	39	GET	/api/v1/crates	'/api/v1/crates'	false	
+packages/registry-api/routes/crates/static-download.ts	193	GET	/crates/:crate_name/:artifact_filename	'/crates/:crate_name/:artifact_filename'	false	
+packages/registry-api/routes/crates/static-download.ts	204	HEAD	/crates/:crate_name/:artifact_filename	'/crates/:crate_name/:artifact_filename'	false	
+packages/registry-api/routes/crates/yank.ts	113	DELETE	/api/v1/crates/:crate_name/:version/yank	'/api/v1/crates/:crate_name/:version/yank'	false	
+packages/registry-api/routes/crates/yank.ts	286	PUT	/api/v1/crates/:crate_name/:version/unyank	'/api/v1/crates/:crate_name/:version/unyank'	false	
+packages/registry-api/routes/crates/yank.ts	458	DELETE	/api/v1/crates/:crate_name/:version	'/api/v1/crates/:crate_name/:version'	false	
+packages/registry-api/routes/deb/by-hash.ts	172	GET	/dists/:distribution/:component/binary-:architecture/by-hash/:algorithm/:hash	'/dists/:distribution/:component/binary-:architecture/by-hash/:algorithm/:hash'	false	
+packages/registry-api/routes/deb/delete.ts	81	DELETE	/pool/:distribution/:component/:name/:version/:architecture	'/pool/:distribution/:component/:name/:version/:architecture'	false	
+packages/registry-api/routes/deb/index-file.ts	218	GET	/dists/:distribution/:component/binary-:architecture/Packages	'/dists/:distribution/:component/binary-:architecture/Packages'	false	
+packages/registry-api/routes/deb/index-file.ts	223	GET	/dists/:distribution/:component/binary-:architecture/Packages.gz	'/dists/:distribution/:component/binary-:architecture/Packages.gz'	false	
+packages/registry-api/routes/deb/key.ts	105	GET	/repository.key	'/repository.key'	false	
+packages/registry-api/routes/deb/pool.ts	126	GET	/pool/:component/:prefix/:sourcePackage/:filename	'/pool/:component/:prefix/:sourcePackage/:filename'	false	prefix
+packages/registry-api/routes/deb/publish.ts	245	PUT	/pool/:distribution/:component/upload	'/pool/:distribution/:component/upload'	false	
+packages/registry-api/routes/deb/release.ts	224	GET	/dists/:distribution/InRelease	'/dists/:distribution/InRelease'	false	
+packages/registry-api/routes/deb/release.ts	229	GET	/dists/:distribution/Release	'/dists/:distribution/Release'	false	
+packages/registry-api/routes/deb/release.ts	235	GET	/dists/:distribution/Release.gpg	'/dists/:distribution/Release.gpg'	false	
+packages/registry-api/routes/docker/index.ts	175	GET	/token	'/token'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	249	GET	/token	'/token'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	334	GET	/	'/'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	340	GET	/_catalog	'/_catalog'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	631	GET	/*	'/*'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	642	PUT	/*	'/*'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	657	POST	/*	'/*'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	673	PATCH	/*	'/*'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/index.ts	687	DELETE	/*	'/*'	false	'/v2' ; '/:repoSlug' ; mount.prefix
+packages/registry-api/routes/docker/ping.ts	41	GET	/v2/-/ping	'/v2/-/ping'	false	
+packages/registry-api/routes/generic/delete.ts	674	DELETE	/*	'/*'	false	
+packages/registry-api/routes/generic/packages-listing.ts	215	GET	/-/packages	'/-/packages'	false	
+packages/registry-api/routes/generic/publish.ts	1176	PUT	/*	'/*'	false	
+packages/registry-api/routes/generic/read.ts	441	GET	/	'/'	false	
+packages/registry-api/routes/generic/read.ts	466	GET	/*	'/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1002	GET	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1026	GET	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1059	POST	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1060	POST	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1061	PUT	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1062	PUT	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1063	PATCH	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1064	PATCH	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1065	DELETE	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1066	DELETE	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1067	OPTIONS	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1068	OPTIONS	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/generic/token-dl.ts	1069	TRACE	/-/dl/:token/	'/-/dl/:token/'	false	
+packages/registry-api/routes/generic/token-dl.ts	1070	TRACE	/-/dl/:token/*	'/-/dl/:token/*'	false	
+packages/registry-api/routes/go/publish.ts	177	PUT	/publish	'/publish'	false	
+packages/registry-api/routes/go/read.ts	167	GET	/*	'/*'	false	
+packages/registry-api/routes/go/retract.ts	95	PUT	/retract	'/retract'	false	
+packages/registry-api/routes/go/sumdb-route.ts	138	GET	/sumdb/*	'/sumdb/*'	false	
+packages/registry-api/routes/maven/index.ts	234	GET	/*	'/*'	false	`/${ECOSYSTEM_PATH_SEGMENTS.maven}/:repoSlug` ; mount.prefix
+packages/registry-api/routes/maven/index.ts	310	PUT	/*	'/*'	false	`/${ECOSYSTEM_PATH_SEGMENTS.maven}/:repoSlug` ; mount.prefix
+packages/registry-api/routes/maven/search.ts	95	GET	/solrsearch/select	'/solrsearch/select'	false	
+packages/registry-api/routes/metrics.ts	151	GET	/metrics	'/metrics'	false	
+packages/registry-api/routes/metrics.ts	179	GET	/metrics/prometheus	'/metrics/prometheus'	false	
+packages/registry-api/routes/npm/access.ts	36	GET	/-/package/:packageName/visibility	'/-/package/:packageName/visibility'	false	
+packages/registry-api/routes/npm/access.ts	74	POST	/-/package/:packageName/access	'/-/package/:packageName/access'	false	
+packages/registry-api/routes/npm/access.ts	102	GET	/-/package/:packageName/collaborators	'/-/package/:packageName/collaborators'	false	
+packages/registry-api/routes/npm/access.ts	119	PUT	/-/package/:packageName/collaborators/:username	'/-/package/:packageName/collaborators/:username'	false	
+packages/registry-api/routes/npm/access.ts	141	DELETE	/-/package/:packageName/collaborators/:username	'/-/package/:packageName/collaborators/:username'	false	
+packages/registry-api/routes/npm/auth.ts	286	PUT	/-/user/org.couchdb.user::username	'/-/user/org.couchdb.user::username'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	429	DELETE	/-/user/token/:tokenKey	'/-/user/token/:tokenKey'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	463	GET	/-/whoami	'/-/whoami'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	487	GET	/-/npm/v1/user	'/-/npm/v1/user'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	528	POST	/-/npm/v1/user	'/-/npm/v1/user'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	561	GET	/-/npm/v1/tokens	'/-/npm/v1/tokens'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	609	POST	/-/npm/v1/tokens	'/-/npm/v1/tokens'	false	prefix ; prefix
+packages/registry-api/routes/npm/auth.ts	743	DELETE	/-/npm/v1/tokens/token/:tokenKey	'/-/npm/v1/tokens/token/:tokenKey'	false	prefix ; prefix
+packages/registry-api/routes/npm/deprecate.ts	55	PUT	/:packageName/-rev/:revision	'/:packageName/-rev/:revision'	false	
+packages/registry-api/routes/npm/dist-tags.ts	294	GET	/-/package/:packageName/dist-tags	'/-/package/:packageName/dist-tags'	false	
+packages/registry-api/routes/npm/dist-tags.ts	421	PUT	/-/package/:packageName/dist-tags/:tag	'/-/package/:packageName/dist-tags/:tag'	false	
+packages/registry-api/routes/npm/dist-tags.ts	549	DELETE	/-/package/:packageName/dist-tags/:tag	'/-/package/:packageName/dist-tags/:tag'	false	
+packages/registry-api/routes/npm/keys.ts	40	GET	/-/npm/v1/keys	'/-/npm/v1/keys'	false	
+packages/registry-api/routes/npm/orgs.ts	39	GET	/-/org/:org/user	'/-/org/:org/user'	false	
+packages/registry-api/routes/npm/orgs.ts	56	PUT	/-/org/:org/user	'/-/org/:org/user'	false	
+packages/registry-api/routes/npm/orgs.ts	78	DELETE	/-/org/:org/user	'/-/org/:org/user'	false	
+packages/registry-api/routes/npm/orgs.ts	100	GET	/-/org/:org/package	'/-/org/:org/package'	false	
+packages/registry-api/routes/npm/package.ts	420	GET	/:packageName	'/:packageName'	false	
+packages/registry-api/routes/npm/package.ts	487	GET	/:packageName/:versionOrName	'/:packageName/:versionOrName'	false	
+packages/registry-api/routes/npm/package.ts	549	GET	/:packageName/-/:tarball	'/:packageName/-/:tarball'	false	
+packages/registry-api/routes/npm/package.ts	556	HEAD	/:packageName/-/:tarball	'/:packageName/-/:tarball'	false	
+packages/registry-api/routes/npm/package.ts	561	GET	/:packageName/:versionOrName/-/:tarball	'/:packageName/:versionOrName/-/:tarball'	false	
+packages/registry-api/routes/npm/package.ts	567	HEAD	/:packageName/:versionOrName/-/:tarball	'/:packageName/:versionOrName/-/:tarball'	false	
+packages/registry-api/routes/npm/package.ts	572	GET	/:packageName/:versionOrName/-/:tarball/:attachmentFile	'/:packageName/:versionOrName/-/:tarball/:attachmentFile'	false	
+packages/registry-api/routes/npm/package.ts	577	HEAD	/:packageName/:versionOrName/-/:tarball/:attachmentFile	'/:packageName/:versionOrName/-/:tarball/:attachmentFile'	false	
+packages/registry-api/routes/npm/package.ts	582	GET	/:packageName/-/:tarball/:attachmentFile	'/:packageName/-/:tarball/:attachmentFile'	false	
+packages/registry-api/routes/npm/package.ts	587	HEAD	/:packageName/-/:tarball/:attachmentFile	'/:packageName/-/:tarball/:attachmentFile'	false	
+packages/registry-api/routes/npm/publish.ts	967	PUT	/:packageName	'/:packageName'	false	
+packages/registry-api/routes/npm/search.ts	86	GET	/-/v1/search	'/-/v1/search'	false	
+packages/registry-api/routes/npm/security.ts	39	POST	/-/npm/v1/security/advisories/bulk	'/-/npm/v1/security/advisories/bulk'	false	
+packages/registry-api/routes/npm/security.ts	48	POST	/-/npm/v1/security/audits	'/-/npm/v1/security/audits'	false	
+packages/registry-api/routes/npm/security.ts	57	POST	/-/npm/v1/security/audits/quick	'/-/npm/v1/security/audits/quick'	false	
+packages/registry-api/routes/npm/stars.ts	13	GET	/-/_view/starredByUser	'/-/_view/starredByUser'	false	
+packages/registry-api/routes/npm/teams.ts	49	DELETE	/-/team/:scope/:team	'/-/team/:scope/:team'	false	
+packages/registry-api/routes/npm/teams.ts	69	GET	/-/team/:scope/:team/user	'/-/team/:scope/:team/user'	false	
+packages/registry-api/routes/npm/teams.ts	86	PUT	/-/team/:scope/:team/user	'/-/team/:scope/:team/user'	false	
+packages/registry-api/routes/npm/teams.ts	108	DELETE	/-/team/:scope/:team/user	'/-/team/:scope/:team/user'	false	
+packages/registry-api/routes/npm/teams.ts	129	GET	/-/org/:org/team	'/-/org/:org/team'	false	
+packages/registry-api/routes/npm/teams.ts	145	PUT	/-/org/:org/team	'/-/org/:org/team'	false	
+packages/registry-api/routes/npm/unpublish.ts	117	DELETE	/:packageName/-rev/:revision	'/:packageName/-rev/:revision'	false	
+packages/registry-api/routes/npm/unpublish.ts	318	DELETE	/:packageName/-/:tarball/-rev/:revision	'/:packageName/-/:tarball/-rev/:revision'	false	
+packages/registry-api/routes/npm/web-login.ts	520	POST	/-/v1/login	'/-/v1/login'	false	
+packages/registry-api/routes/nuget/assets.ts	170	GET	/assets/:packageId/:normalizedVersion/icon	'/assets/:packageId/:normalizedVersion/icon'	false	
+packages/registry-api/routes/nuget/assets.ts	176	GET	/assets/:packageId/:normalizedVersion/readme	'/assets/:packageId/:normalizedVersion/readme'	false	
+packages/registry-api/routes/nuget/autocomplete.ts	62	GET	/autocomplete	'/autocomplete'	false	
+packages/registry-api/routes/nuget/flat-container.ts	232	GET	/flat/:packageId/index.json	'/flat/:packageId/index.json'	false	
+packages/registry-api/routes/nuget/flat-container.ts	284	GET	/flat/:packageId/:version/:filename	'/flat/:packageId/:version/:filename'	false	
+packages/registry-api/routes/nuget/flat-container.ts	296	HEAD	/flat/:packageId/:version/:filename	'/flat/:packageId/:version/:filename'	false	
+packages/registry-api/routes/nuget/publish.ts	101	PUT	/	'/'	false	
+packages/registry-api/routes/nuget/registration.ts	70	GET	/registration/:packageId/index.json	'/registration/:packageId/index.json'	false	
+packages/registry-api/routes/nuget/registration.ts	135	GET	/registration/:packageId/page/:pageIndex	'/registration/:packageId/page/:pageIndex'	false	
+packages/registry-api/routes/nuget/registration.ts	206	GET	/registration/:packageId/:versionFilename	'/registration/:packageId/:versionFilename'	false	
+packages/registry-api/routes/nuget/search.ts	58	GET	/query	'/query'	false	
+packages/registry-api/routes/nuget/service-index.ts	44	GET	/index.json	'/index.json'	false	
+packages/registry-api/routes/nuget/unlist.ts	77	DELETE	/:packageId/:version	'/:packageId/:version'	false	
+packages/registry-api/routes/nuget/vulnerability-info.ts	39	GET	/vulnerability/index.json	'/vulnerability/index.json'	false	
+packages/registry-api/routes/pypi/files.ts	101	GET	/packages/*	'/packages/*'	false	
+packages/registry-api/routes/pypi/json-api.ts	55	GET	/pypi/:package/json	'/pypi/:package/json'	false	
+packages/registry-api/routes/pypi/json-api.ts	119	GET	/pypi/:package/:version/json	'/pypi/:package/:version/json'	false	
+packages/registry-api/routes/pypi/rss.ts	70	GET	/rss/updates.xml	'/rss/updates.xml'	false	
+packages/registry-api/routes/pypi/rss.ts	130	GET	/rss/packages.xml	'/rss/packages.xml'	false	
+packages/registry-api/routes/pypi/search.ts	46	POST	/RPC2	'/RPC2'	false	
+packages/registry-api/routes/pypi/simple-api.ts	185	GET	/simple/	'/simple/'	false	
+packages/registry-api/routes/pypi/simple-api.ts	333	GET	/simple/:project/	'/simple/:project/'	false	
+packages/registry-api/routes/pypi/upload.ts	202	POST	/legacy/	'/legacy/'	false	
+packages/registry-api/routes/pypi/yank.ts	105	POST	/api/v1/projects/:project/:version/yank	'/api/v1/projects/:project/:version/yank'	false	
+packages/registry-api/routes/pypi/yank.ts	319	PUT	/api/v1/projects/:project/:version/unyank	'/api/v1/projects/:project/:version/unyank'	false	
+packages/registry-api/routes/root.ts	44	GET	/	'/'	false	
+packages/registry-api/routes/root.ts	66	GET	/health	'/health'	false	
+packages/registry-api/routes/root.ts	71	GET	/health/ready	'/health/ready'	false	
+packages/registry-api/routes/rpm/delete.ts	72	DELETE	/*	'/*'	false	
+packages/registry-api/routes/rpm/publish.ts	192	PUT	/*	'/*'	false	
+packages/registry-api/routes/rpm/read.ts	372	GET	/*	'/*'	false	
+packages/registry-api/routes/rubygems/compact-index.ts	159	GET	/versions	'/versions'	false	
+packages/registry-api/routes/rubygems/compact-index.ts	404	GET	/info/:name	'/info/:name'	false	
+packages/registry-api/routes/rubygems/compact-index.ts	450	GET	/names	'/names'	false	
+packages/registry-api/routes/rubygems/download.ts	152	GET	/gems/:filename	'/gems/:filename'	false	
+packages/registry-api/routes/rubygems/download.ts	159	HEAD	/gems/:filename	'/gems/:filename'	false	
+packages/registry-api/routes/rubygems/index.ts	172	GET	/	'/'	false	`/${ECOSYSTEM_PATH_SEGMENTS.rubygems}/:repoSlug` ; `/${ECOSYSTEM_PATH_SEGMENTS.rubygems}/:repoSlug` ; mount.prefix
+packages/registry-api/routes/rubygems/metadata.ts	52	GET	/api/v1/gems/:name	'/api/v1/gems/:name'	false	
+packages/registry-api/routes/rubygems/metadata.ts	99	GET	/api/v1/versions/:name	'/api/v1/versions/:name'	false	
+packages/registry-api/routes/rubygems/metadata.ts	145	GET	/api/v2/rubygems/:name/versions/:version	'/api/v2/rubygems/:name/versions/:version'	false	
+packages/registry-api/routes/rubygems/metadata.ts	198	GET	/api/v1/gems/:name/owners.json	'/api/v1/gems/:name/owners.json'	false	
+packages/registry-api/routes/rubygems/publish.ts	118	POST	/api/v1/gems	'/api/v1/gems'	false	
+packages/registry-api/routes/rubygems/publish.ts	505	DELETE	/api/v1/gems/yank	'/api/v1/gems/yank'	false	
+packages/registry-api/routes/rubygems/specs.ts	351	GET	/specs.4.8.gz	'/specs.4.8.gz'	false	
+packages/registry-api/routes/rubygems/specs.ts	356	GET	/latest_specs.4.8.gz	'/latest_specs.4.8.gz'	false	
+packages/registry-api/routes/rubygems/specs.ts	361	GET	/prerelease_specs.4.8.gz	'/prerelease_specs.4.8.gz'	false	
+packages/registry-api/routes/rubygems/specs.ts	369	GET	/quick/Marshal.4.8/:filename	'/quick/Marshal.4.8/:filename'	false	
+packages/registry-api/routes/rubygems/test-hooks.ts	53	POST	/set_time	'/set_time'	false	
+packages/registry-api/routes/rubygems/test-hooks.ts	97	POST	/rebuild_versions_list	'/rebuild_versions_list'	false	
+packages/shared-routes/search-routes.ts	339	GET	/api/v1/search	'/api/v1/search'	false	
+packages/shared-routes/search-routes.ts	922	GET	/api/v1/search/checksum	'/api/v1/search/checksum'	false	

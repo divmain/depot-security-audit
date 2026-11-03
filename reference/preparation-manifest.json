@@ -1,0 +1,161 @@
+{
+  "generatedAt": "2026-10-31T22:03:00.727Z",
+  "sourceCommit": "6a72e67b4b580f0bcb9f2c549782068d2d430aa3",
+  "inventorySha256": "6b8d265e2ad0ed03df197ef89810577512f97c4351f40d39d7bf3cee71f746f3",
+  "totalItems": 6406,
+  "parts": [
+    {
+      "sourcePart": "01-http-ingress.md",
+      "prefix": "HTTP",
+      "itemCount": 240,
+      "sha256": "a9b66c710fa88d7408a558c1f6e6e0eee8f3da6c9079bc80bcf47d837b18183f"
+    },
+    {
+      "sourcePart": "02-authentication-sessions.md",
+      "prefix": "AUTH",
+      "itemCount": 196,
+      "sha256": "888ab6480a065de8cd0b49e20370a3a96f3bc15483fd8fb6213ccf8e6207b0e3"
+    },
+    {
+      "sourcePart": "03-identity-authorization.md",
+      "prefix": "IAM",
+      "itemCount": 163,
+      "sha256": "984fa6c7fd2586a23a441dda9c2943ea719a9240cb9e7f7b29ab744397db3f72"
+    },
+    {
+      "sourcePart": "04-federation-scim.md",
+      "prefix": "FED",
+      "itemCount": 123,
+      "sha256": "3943d1417cc8871f3b5ce01eeb10508dcc0134a951e7ec170a42d39345b734dd"
+    },
+    {
+      "sourcePart": "05-trusted-publishing.md",
+      "prefix": "OIDC",
+      "itemCount": 149,
+      "sha256": "c4659fcc02968bb593397725e79d89c3c7877d902079cc96552d3b0602f56887"
+    },
+    {
+      "sourcePart": "06-privileged-access.md",
+      "prefix": "PAM",
+      "itemCount": 347,
+      "sha256": "1d44535abafd7c589bcabcd40419def1a8c4f114617df85d19818d425702b5c4"
+    },
+    {
+      "sourcePart": "07-repository-lifecycle.md",
+      "prefix": "REPO",
+      "itemCount": 202,
+      "sha256": "1810ba442faf6b00e5257e6d2720ce9044c05ec95a3cff857f655aa8a36f8427"
+    },
+    {
+      "sourcePart": "08-policy-facts.md",
+      "prefix": "POL",
+      "itemCount": 212,
+      "sha256": "b84dd2bd972ee68602252bde37d98c2c7bf87373bbe76f611bfe7fe5b28a9cc6"
+    },
+    {
+      "sourcePart": "09-governance-security.md",
+      "prefix": "GOV",
+      "itemCount": 158,
+      "sha256": "de830e0df1a6c0f914986f7cb5d1035d76754c95a1567b235a6310669bb2d780"
+    },
+    {
+      "sourcePart": "10-search-dashboard-management.md",
+      "prefix": "READ",
+      "itemCount": 281,
+      "sha256": "427b384cc0bd227a01c265221926d1e3211b61ca86caf088ec9bc801048bf19f"
+    },
+    {
+      "sourcePart": "11-evidence-events.md",
+      "prefix": "EVID",
+      "itemCount": 179,
+      "sha256": "dfcded88beeebb80412635b94a0184ee1c034d4baafc0f51562d0998d6a9bbe4"
+    },
+    {
+      "sourcePart": "12-integrations-delivery.md",
+      "prefix": "INT",
+      "itemCount": 255,
+      "sha256": "7e25532ebabb5aea2e5c9f63d31eac8778b0c43ad9eea8f253764e539fe824eb"
+    },
+    {
+      "sourcePart": "13-coordination-operations.md",
+      "prefix": "OPS",
+      "itemCount": 285,
+      "sha256": "e46c0c71787bb8d32133d7998813de26bb2c600c12ae76f0d95796057ee22ea6"
+    },
+    {
+      "sourcePart": "14-registry-core.md",
+      "prefix": "REG",
+      "itemCount": 253,
+      "sha256": "2487e5f583a5709f5685d13f5dd4041382ad99d4e09b1e6d88d686088c13e746"
+    },
+    {
+      "sourcePart": "15-npm-cargo.md",
+      "prefix": "NPMCR",
+      "itemCount": 320,
+      "sha256": "e392758a9e0a27f8085f8561ef9d72c16b73ba0e95bd29de93a2906b630a32dd"
+    },
+    {
+      "sourcePart": "16-docker-helm.md",
+      "prefix": "OCI",
+      "itemCount": 217,
+      "sha256": "9885a124fcadabb08af1cec897c84b2dfced4a6894ecfd3c359486b6290f01e0"
+    },
+    {
+      "sourcePart": "17-pypi-rubygems-composer.md",
+      "prefix": "PYRC",
+      "itemCount": 215,
+      "sha256": "91e59a729bedbaba033b78953cf4ec5a9bfb467b2517d4006a0d3484fbccdc93"
+    },
+    {
+      "sourcePart": "18-go-maven-nuget.md",
+      "prefix": "GMN",
+      "itemCount": 350,
+      "sha256": "23cd66de11c957fecf896154766cd91c91376a27613c6b83a8841fefdba114d3"
+    },
+    {
+      "sourcePart": "19-distro-generic.md",
+      "prefix": "DIST",
+      "itemCount": 442,
+      "sha256": "f9b0d9d870be8dde2b5f7a48aaa82467e4847e5b7d15381508b850f10e7110ea"
+    },
+    {
+      "sourcePart": "20-database-persistence.md",
+      "prefix": "DATA",
+      "itemCount": 319,
+      "sha256": "7a2b328b6e8f26494eae426f15ed330e50425c052297e67562966080aa8eaeed"
+    },
+    {
+      "sourcePart": "21-egress-upstreams.md",
+      "prefix": "NET",
+      "itemCount": 235,
+      "sha256": "30ea62600343396763c2a93ab75aef4ea067cb3f68c235c7864326973150fa4f"
+    },
+    {
+      "sourcePart": "22-blobs-binary-crypto.md",
+      "prefix": "BIN",
+      "itemCount": 120,
+      "sha256": "75f63b741feb48c08ee46338e44eaa467f5b247c18f521b533fb4a2fefe7a209"
+    },
+    {
+      "sourcePart": "23-browser-ui.md",
+      "prefix": "WEB",
+      "itemCount": 419,
+      "sha256": "b0a78fc7539d6d17bd1300ff03a56999664ed7eec8dfd6b8c411ff018ed589bf"
+    },
+    {
+      "sourcePart": "24-cli-sdk-config.md",
+      "prefix": "CLI",
+      "itemCount": 456,
+      "sha256": "5fe398673cb4e6bab18b793b09989862a0a174d6e6d4fdd81613ad7b935fadb0"
+    },
+    {
+      "sourcePart": "25-build-deployment-tooling.md",
+      "prefix": "BUILD",
+      "itemCount": 270,
+      "sha256": "5d13188e75d3c1d1b821d92c7c4a069dacd4190b2686f65f6e34d3e9a9aff46f"
+    }
+  ],
+  "sourceRegistrationCandidates": 608,
+  "candidatesWhoseSourceIsReferenced": 608,
+  "caveat": "Source-file references are traceability only, not method-specific coverage, completed review, or evidence of security."
+}

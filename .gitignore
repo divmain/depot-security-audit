@@ -1,0 +1,7 @@
+depot/
+node_modules/
+harness/results/
+harness/transcripts/
+high-criticality/
+criticality/
+batches/

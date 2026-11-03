@@ -1,0 +1,44 @@
+{
+  "inventory_items": 6406,
+  "finding_categories": 65,
+  "checked_source_path_spellings": 2556,
+  "errors": [],
+  "source_paths_requiring_reconciliation": {},
+  "surface_traceability": {
+    "literal_http_registration_candidates": 597,
+    "literal_method_path_source_reconciliation": [],
+    "computed_registration_candidates_for_composition_review": 11,
+    "browser_route_declarations": 114,
+    "browser_route_source_reconciliation": [],
+    "meaning": "Textual entry-point traceability only; not semantic coverage, mounted-runtime observation, or completed security review."
+  },
+  "criticality": {
+    "counts": {
+      "critical": 198,
+      "high": 3488,
+      "medium": 2465,
+      "low": 255
+    },
+    "rows": 6406,
+    "companionRows": 6406,
+    "matchesInitialCompanions": false,
+    "highOnlyRefinement": {
+      "reassessedRows": 3686,
+      "protectedRows": 2720,
+      "onlyOriginalHighRatingsChanged": true,
+      "mediumLowRowsPreserved": true,
+      "matchesRefinedDecisions": true
+    },
+    "ledgerUnchangedSinceLatestMerge": true,
+    "latestMergeReport": "reference/high-criticality-merge-report.json",
+    "csvMatchesCurrentMaster": true
+  },
+  "notes": [
+    {
+      "ledger_status_counts": {
+        "not_started": 6406
+      }
+    }
+  ],
+  "scope": "Artifact format, links, IDs, ledger parity, manifest checksum and literal source paths only; no product tests or security review."
+}

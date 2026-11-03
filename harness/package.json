@@ -1,0 +1,19 @@
+{
+  "name": "depot-audit-harness",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/main.ts",
+    "dry-run": "bun run src/main.ts --dry-run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.84",
+    "ai": "^7.0.162",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "typescript": "^7.0.2"
+  }
+}

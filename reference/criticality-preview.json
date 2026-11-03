@@ -1,0 +1,299 @@
+{
+  "generatedAt": "2026-10-31T22:43:05.494857+00:00",
+  "inventorySha256": "6b8d265e2ad0ed03df197ef89810577512f97c4351f40d39d7bf3cee71f746f3",
+  "rubricSha256": "01a2c1382cbfe7487aa532a92779fe56c7b565457efbb490ca1541fb07b5b56c",
+  "totalRows": 6406,
+  "counts": {
+    "high": 3686,
+    "medium": 2465,
+    "low": 255
+  },
+  "byArea": {
+    "HTTP": {
+      "high": 111,
+      "medium": 79,
+      "low": 50
+    },
+    "AUTH": {
+      "high": 155,
+      "medium": 30,
+      "low": 11
+    },
+    "IAM": {
+      "high": 132,
+      "medium": 31,
+      "low": 0
+    },
+    "FED": {
+      "high": 98,
+      "medium": 20,
+      "low": 5
+    },
+    "OIDC": {
+      "high": 91,
+      "medium": 58,
+      "low": 0
+    },
+    "PAM": {
+      "high": 237,
+      "medium": 109,
+      "low": 1
+    },
+    "REPO": {
+      "high": 121,
+      "medium": 81,
+      "low": 0
+    },
+    "POL": {
+      "high": 170,
+      "medium": 40,
+      "low": 2
+    },
+    "GOV": {
+      "high": 87,
+      "medium": 68,
+      "low": 3
+    },
+    "READ": {
+      "high": 92,
+      "medium": 179,
+      "low": 10
+    },
+    "EVID": {
+      "high": 75,
+      "medium": 99,
+      "low": 5
+    },
+    "INT": {
+      "high": 111,
+      "medium": 142,
+      "low": 2
+    },
+    "OPS": {
+      "high": 149,
+      "medium": 114,
+      "low": 22
+    },
+    "REG": {
+      "high": 161,
+      "medium": 91,
+      "low": 1
+    },
+    "NPMCR": {
+      "high": 220,
+      "medium": 71,
+      "low": 29
+    },
+    "OCI": {
+      "high": 150,
+      "medium": 63,
+      "low": 4
+    },
+    "PYRC": {
+      "high": 131,
+      "medium": 70,
+      "low": 14
+    },
+    "GMN": {
+      "high": 203,
+      "medium": 138,
+      "low": 9
+    },
+    "DIST": {
+      "high": 280,
+      "medium": 130,
+      "low": 32
+    },
+    "DATA": {
+      "high": 242,
+      "medium": 75,
+      "low": 2
+    },
+    "NET": {
+      "high": 158,
+      "medium": 73,
+      "low": 4
+    },
+    "BIN": {
+      "high": 80,
+      "medium": 38,
+      "low": 2
+    },
+    "WEB": {
+      "high": 115,
+      "medium": 270,
+      "low": 34
+    },
+    "CLI": {
+      "high": 196,
+      "medium": 251,
+      "low": 9
+    },
+    "BUILD": {
+      "high": 121,
+      "medium": 145,
+      "low": 4
+    }
+  },
+  "companions": [
+    {
+      "path": "criticality/HTTP.tsv",
+      "sha256": "38464d035879fce5d6ec83fd10104d8c1c38b09070942621df9b310d84cf6bc7",
+      "rows": 240
+    },
+    {
+      "path": "criticality/AUTH.tsv",
+      "sha256": "37756fca31a3c0205b6f605e160d52ac2338dbf0118e8006efd525f3beaf319a",
+      "rows": 196
+    },
+    {
+      "path": "criticality/IAM.tsv",
+      "sha256": "c834afbee3a505c55df7999a8e074c630a9b317c9176593686eb9cd587f91d39",
+      "rows": 163
+    },
+    {
+      "path": "criticality/FED.tsv",
+      "sha256": "45bb4d86b0f6d9b2fa675063bb48302d1bfd653235e86f5231050fa7fe032971",
+      "rows": 123
+    },
+    {
+      "path": "criticality/OIDC.tsv",
+      "sha256": "87fe53fd5a9260a57e1285742e4519c77f36fe075faab07fa350a1eb2e9c4021",
+      "rows": 149
+    },
+    {
+      "path": "criticality/PAM.tsv",
+      "sha256": "240814ef569fd349d6b5ea3ee63f05d9f5316e2f7bca824a08d5c3995ceee753",
+      "rows": 347
+    },
+    {
+      "path": "criticality/REPO.tsv",
+      "sha256": "af06ea1e6546418257217d3c7482c02c50839bcdd88a35593493395dc6380996",
+      "rows": 202
+    },
+    {
+      "path": "criticality/POL.tsv",
+      "sha256": "992260b60f3270ae3a1e0de51cae09fa9a381a33ec78520eac168e697791385a",
+      "rows": 212
+    },
+    {
+      "path": "criticality/GOV.tsv",
+      "sha256": "fa8f36650794392f32e96631ded5569b5edd6f50610ea1c3110c7b84147a2ae4",
+      "rows": 158
+    },
+    {
+      "path": "criticality/READ.tsv",
+      "sha256": "8e8b56069a11023e990eba19cd41bcfc2f9065a7d869466d009c9949fb58b657",
+      "rows": 281
+    },
+    {
+      "path": "criticality/EVID.tsv",
+      "sha256": "f8a3af722590cb4961d0ef856f5e4d3e3c200bd6e6fff60839cd5411ef836cc1",
+      "rows": 179
+    },
+    {
+      "path": "criticality/INT.tsv",
+      "sha256": "4e2c9028b08f63408f1b93d0d2ae91d0862d3c7f94e8da6e097616244b852b81",
+      "rows": 255
+    },
+    {
+      "path": "criticality/OPS.tsv",
+      "sha256": "e776909e8a6814e716bc729314b56a8a7656aa9bf53ea15ba1ede643cbaff8f0",
+      "rows": 285
+    },
+    {
+      "path": "criticality/REG.tsv",
+      "sha256": "cbf381fdec275298b023108c3a8ff4e94102c0fbf274c200264e5b8e74ec461c",
+      "rows": 253
+    },
+    {
+      "path": "criticality/NPMCR.tsv",
+      "sha256": "4bbddd3e171091e39716c948b05c6ec13561e8b47f25d533b5f73fae759f8d83",
+      "rows": 320
+    },
+    {
+      "path": "criticality/OCI.tsv",
+      "sha256": "175085a7d5811867582494835a17cd972b2a8d588f83ed5e4522b2ae2f54e682",
+      "rows": 217
+    },
+    {
+      "path": "criticality/PYRC.tsv",
+      "sha256": "5e31683d8ca79f3da1e0bfb1b4b5da8a69c7fff3a43ba7001dec3f03290d0ff2",
+      "rows": 215
+    },
+    {
+      "path": "criticality/GMN.tsv",
+      "sha256": "f62c9e75bfa007bc064fafca8b4574a2ae63c4b3af8c701e0f8bbc627aa7007f",
+      "rows": 350
+    },
+    {
+      "path": "criticality/DIST.tsv",
+      "sha256": "e1278588c75b39acb64645ce56c92f3963ab18ade46e746aaaae9ab37eb4a63e",
+      "rows": 442
+    },
+    {
+      "path": "criticality/DATA.tsv",
+      "sha256": "7fe5b29263f1bf87f92e6a660f9591c20481bf672ae84513c255bca06d733699",
+      "rows": 319
+    },
+    {
+      "path": "criticality/NET.tsv",
+      "sha256": "1368a738a5298ce44dcbef7c5e27f53fe8b17905520ec055e86dc277b931b781",
+      "rows": 235
+    },
+    {
+      "path": "criticality/BIN.tsv",
+      "sha256": "5352f1f6c761f2565573ea0d2533a07ab67c20a9013333cdc697480be69f26b8",
+      "rows": 120
+    },
+    {
+      "path": "criticality/WEB.tsv",
+      "sha256": "0a5550d2f20f62b0dbc034b079eb6e637f5aa8092da714858dc95b36742a2c2d",
+      "rows": 419
+    },
+    {
+      "path": "criticality/CLI.tsv",
+      "sha256": "6f69aa89f359d0e16ea9f15e69677343dbdbc7506752336cd0270542abaf16cf",
+      "rows": 456
+    },
+    {
+      "path": "criticality/BUILD.tsv",
+      "sha256": "6aee798e02c51bce2f05489ae5bc492172e948282f2eff8c6485526e00e5d801",
+      "rows": 270
+    }
+  ],
+  "classificationSha256": "e71bf8e53a54cb93d2f51e98ec60b8f0b2e5d43cb7de15098f0ce8a8b9942d7e",
+  "beforeLedgerSha256": "e430a8e2e1e16a37f4ff2bb8f824f0e3f36d112b01b0abaa1223d4c066dd2cfa",
+  "afterLedgerSha256": "21b67c29a517242700f6b4dab07311feb569c350194713a3cd450a882ccb4316",
+  "allOtherFieldsPreserved": true,
+  "rowOrderPreserved": true,
+  "existingCriticalityChanges": [],
+  "columns": [
+    "inventory_id",
+    "area",
+    "surface",
+    "criticality",
+    "status",
+    "reviewer",
+    "reviewed_revision",
+    "category_ids",
+    "outcome",
+    "evidence",
+    "notes"
+  ],
+  "trailingEmptyFieldNormalization": [
+    {
+      "inventory_id": "BUILD-270",
+      "emptyTrailingFields": [
+        "reviewer",
+        "reviewed_revision",
+        "category_ids",
+        "outcome",
+        "evidence",
+        "notes"
+      ]
+    }
+  ],
+  "scope": "Initial conditional-impact classification; not audited vulnerabilities, likelihood, or confirmed severity.",
+  "applied": false
+}
