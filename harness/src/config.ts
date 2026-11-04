@@ -26,6 +26,13 @@ export interface Config {
   adversaryTokenBudget: number;
   /** Status recorded between the primary review and the adversarial pass. */
   preliminaryStatus: string;
+  /** Remediation third-stage model; empty string disables the remediation pass. */
+  remediationModel: string;
+  remediationReasoningEffort: string;
+  remediationMaxSteps: number;
+  remediationTokenBudget: number;
+  /** Status recorded between the adversarial pass and the remediation pass. */
+  remediationStatus: string;
   concurrency: number;
   /** Per-model concurrency overrides: exact model ID → limit. */
   concurrencyOverrides: Map<string, number>;
@@ -91,6 +98,11 @@ export function loadConfig(): Config {
     adversaryMaxSteps: intEnv('AUDIT_ADVERSARY_MAX_STEPS', 40),
     adversaryTokenBudget: intEnv('AUDIT_ADVERSARY_TOKEN_BUDGET', 200_000),
     preliminaryStatus: strEnv('AUDIT_PRELIMINARY_STATUS', 'preliminary_finding'),
+    remediationModel: strEnv('AUDIT_REMEDIATION_MODEL'),
+    remediationReasoningEffort: strEnv('AUDIT_REMEDIATION_REASONING_EFFORT', 'max'),
+    remediationMaxSteps: intEnv('AUDIT_REMEDIATION_MAX_STEPS', 40),
+    remediationTokenBudget: intEnv('AUDIT_REMEDIATION_TOKEN_BUDGET', 200_000),
+    remediationStatus: strEnv('AUDIT_REMEDIATION_STATUS', 'remediation_needed'),
     concurrency: intEnv('AUDIT_CONCURRENCY', 8),
     concurrencyOverrides: parseConcurrencyOverrides(strEnv('AUDIT_CONCURRENCY_OVERRIDES')),
     maxSteps: intEnv('AUDIT_MAX_STEPS', 40),

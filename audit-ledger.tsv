@@ -44,7 +44,7 @@ HTTP-042	HTTP	Registry base-context sigil and decorations	low	not_started
 HTTP-043	HTTP	Concrete registry context narrowing	medium	not_started						
 HTTP-044	HTTP	Wide principal-route registry context	low	not_started						
 HTTP-045	HTTP	Error-lifecycle context narrowing	medium	not_started						
-HTTP-046	HTTP	Verified-token to request-authority mapping	critical	done						
+HTTP-046	HTTP	Verified-token to request-authority mapping	critical	not_started						
 HTTP-047	HTTP	Control-plane lookup enrichment boundary	high	not_started						
 HTTP-048	HTTP	Registry lookup telemetry boundary	medium	not_started						
 HTTP-049	HTTP	Credential-header presence contract	high	not_started						
@@ -56,17 +56,17 @@ HTTP-054	HTTP	X-NuGet-ApiKey extraction	low	not_started
 HTTP-055	HTTP	Mixed credential-header precedence	medium	not_started						
 HTTP-056	HTTP	Header-token versus session fallback	high	not_started						
 HTTP-057	HTTP	Opt-in stateless credential verifier seam	high	not_started						
-HTTP-058	HTTP	Core token entropy and prefix generation	critical	done						
-HTTP-059	HTTP	Raw credential hashing primitive	critical	done						
-HTTP-060	HTTP	Timing-safe secret comparison	critical	done						
+HTTP-058	HTTP	Core token entropy and prefix generation	critical	not_started						
+HTTP-059	HTTP	Raw credential hashing primitive	critical	not_started						
+HTTP-060	HTTP	Timing-safe secret comparison	critical	not_started						
 HTTP-061	HTTP	Failed-token prefix-hint admission	high	not_started						
 HTTP-062	HTTP	Consume-before-verification authentication limiter	high	not_started						
 HTTP-063	HTTP	Malformed-header failure accounting	medium	not_started						
 HTTP-064	HTTP	Authentication-attempt refund semantics	medium	not_started						
 HTTP-065	HTTP	Limiter storage, expiry, and cardinality boundary	high	not_started						
 HTTP-066	HTTP	Rate-limit refusal transport	low	not_started						
-HTTP-067	HTTP	Workspace role-rank guard	critical	done						
-HTTP-068	HTTP	Cross-principal rank comparison	critical	done						
+HTTP-067	HTTP	Workspace role-rank guard	critical	not_started						
+HTTP-068	HTTP	Cross-principal rank comparison	critical	not_started						
 HTTP-069	HTTP	Role-or-duty authorization primitive	high	not_started						
 HTTP-070	HTTP	Explicit-duty-only authorization primitive	high	not_started						
 HTTP-071	HTTP	Repository privilege comparison and owner shortcut	high	not_started						
@@ -77,19 +77,19 @@ HTTP-075	HTTP	Composite read authorization adapter	high	not_started
 HTTP-076	HTTP	Workspace token-scope primitive	high	not_started						
 HTTP-077	HTTP	Repository token-scope primitive	high	not_started						
 HTTP-078	HTTP	Package-coordinate token-scope admission	high	not_started						
-HTTP-079	HTTP	Credential scope-envelope intersection	critical	done						
+HTTP-079	HTTP	Credential scope-envelope intersection	critical	not_started						
 HTTP-080	HTTP	DB-backed principal allowlist	high	not_started						
 HTTP-081	HTTP	Entitlement-only rejection primitive	medium	not_started						
 HTTP-082	HTTP	Real-principal credential-ID narrowing	high	not_started						
-HTTP-083	HTTP	Unscoped-credential guard	critical	done						
-HTTP-084	HTTP	Deployment global-admin guard	critical	done						
+HTTP-083	HTTP	Unscoped-credential guard	critical	not_started						
+HTTP-084	HTTP	Deployment global-admin guard	critical	not_started						
 HTTP-085	HTTP	Elevation-bound credential structural refusal	high	not_started						
 HTTP-086	HTTP	Elevation-lifecycle credential structural refusal	high	not_started						
 HTTP-087	HTTP	Trusted-publishing credential provenance primitive	high	not_started						
 HTTP-088	HTTP	Unconditional Lockdown prohibition primitive	high	not_started						
 HTTP-089	HTTP	Lockdown owner exception for credential rotation	high	not_started						
 HTTP-090	HTTP	Lockdown owner-only control weakening primitive	high	not_started						
-HTTP-091	HTTP	Control-plane path-based workspace resolver	critical	done						
+HTTP-091	HTTP	Control-plane path-based workspace resolver	critical	not_started						
 HTTP-092	HTTP	Control-plane query-based workspace resolver	high	not_started						
 HTTP-093	HTTP	Control-plane repository resolver and scope gate	high	not_started						
 HTTP-094	HTTP	Workspace-owned entity lookup primitive	high	not_started						
@@ -227,7 +227,7 @@ HTTP-225	HTTP	Router normalization and parameter-decoding boundary	high	not_star
 HTTP-226	HTTP	SPA existing-file GET handler	high	not_started						
 HTTP-227	HTTP	SPA root and explicit entry-document GET	low	not_started						
 HTTP-228	HTTP	SPA missing-file/client-route GET fallback	low	not_started						
-HTTP-229	HTTP	SPA lexical path containment	critical	done						
+HTTP-229	HTTP	SPA lexical path containment	critical	not_started						
 HTTP-230	HTTP	SPA filesystem indirection and lookup races	high	not_started						
 HTTP-231	HTTP	SPA MIME dispatch	medium	not_started						
 HTTP-232	HTTP	SPA immutable-asset cache classification	medium	not_started						
@@ -1776,7 +1776,7 @@ GOV-142	GOV	Security Overview hold-population read	medium	not_started
 GOV-143	GOV	Hold-history reconstruction semantics	medium	not_started						
 GOV-144	GOV	Personal work-item enumeration	medium	not_started						
 GOV-145	GOV	Work item marked read	medium	not_started						
-GOV-146	GOV	Work item marked done	medium	not_started						
+GOV-146	GOV	Work item marked not_started	medium	not_started						
 GOV-147	GOV	Work item restored to unread	medium	not_started						
 GOV-148	GOV	Work-item save and unsave	medium	not_started						
 GOV-149	GOV	Requester inbox emission and refresh	medium	not_started						
@@ -5322,7 +5322,7 @@ WEB-059	WEB	Revoke all other sessions	medium	not_started
 WEB-060	WEB	Pending-invitation claim	medium	not_started						
 WEB-061	WEB	Durable identity notices	medium	not_started						
 WEB-062	WEB	My Work inbox and row resolution	medium	not_started						
-WEB-063	WEB	My Work read/done/saved mutations	medium	not_started						
+WEB-063	WEB	My Work read/not_started/saved mutations	medium	not_started						
 WEB-064	WEB	Pending and assigned work facets	medium	not_started						
 WEB-065	WEB	Workspace dashboard document loading and saving	low	not_started						
 WEB-066	WEB	Dashboard widget configuration decoding	low	not_started						

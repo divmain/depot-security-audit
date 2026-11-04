@@ -14,7 +14,17 @@ import { readCategoriesDocument } from './categories';
 import { createFsTools } from './fs-tools';
 import { reviewItem, type ReviewDeps } from './agent';
 import { adversarialReview, finalOutcomeFor, type AdversarialDeps, type AdversarialSubject } from './adversary';
-import { BASELINE_REVISION, buildAdversarialSystemPrompt, buildAdversarialTaskPrompt, buildItemPrompt, buildSystemPrompt, type RevisionInfo } from './prompt';
+import { isConfirmingVerdict, remediationReview, type RemediationDeps, type RemediationSubject } from './remediation';
+import {
+  BASELINE_REVISION,
+  buildAdversarialSystemPrompt,
+  buildAdversarialTaskPrompt,
+  buildItemPrompt,
+  buildRemediationSystemPrompt,
+  buildRemediationTaskPrompt,
+  buildSystemPrompt,
+  type RevisionInfo,
+} from './prompt';
 
 interface CliArgs {
   statuses: string[];
@@ -34,11 +44,11 @@ const HELP = `Depot audit harness — reviews audit-ledger.tsv items with a tool
 
 Usage: bun run src/main.ts [options]
 
-Selection (defaults to status=not_started plus rows awaiting an adversarial pass, ordered critical -> high -> medium -> low):
+Selection (defaults to status=not_started plus rows awaiting either follow-up stage, ordered critical -> high -> medium -> low):
   --prefix PREFIXES      Comma-separated inventory ID prefixes, e.g. AUTH,HTTP
   --criticality BANDS    Comma-separated bands, e.g. critical,high
   --ids IDS              Exact inventory IDs, e.g. HTTP-001,HTTP-002 (ignores the default status filter)
-  --status STATUSES      Comma-separated statuses to select (default: not_started,preliminary_finding)
+  --status STATUSES      Comma-separated statuses to select (default: not_started,preliminary_finding,remediation_needed)
   --limit N              Stop after N items
 
 Execution:
@@ -59,6 +69,12 @@ Behavior:
     (AUDIT_PRELIMINARY_STATUS); the adversarial reviewer then tries to break the
     finding and the row only becomes "done" once its verdict is recorded. Rows left
     at preliminary_finding (interrupt or failure) resume with the adversarial pass.
+  - When the remediation pass is enabled (AUDIT_REMEDIATION_MODEL set) and the
+    adversarial verdict confirms the finding (upheld / overstated / understated),
+    the row then moves to "remediation_needed" (AUDIT_REMEDIATION_STATUS) and a
+    remediation designer proposes 1-3 fixes (exactly one primary) before the row
+    becomes "done". Rows left at remediation_needed resume with the remediation
+    pass; refuted/undecidable verdicts finish the row directly.
   - Ctrl-C once: stop claiming new items and drain the in-flight ones (boundary-safe).
     Ctrl-C twice: abort in-flight calls; unfinished items keep their current status and re-run later.
   - Failed items are left at their previous status and reported in the summary.`;
@@ -235,6 +251,8 @@ interface Summary {
   outcomes: Map<string, number>;
   verdicts: Map<string, number>;
   adversarialDone: number;
+  remediationDone: number;
+  remediationScopes: Map<string, number>;
   failures: Array<{ id: string; error: string }>;
 }
 
@@ -287,6 +305,28 @@ function loadPrimaryResult(cfg: Config, inventoryId: string): AdversarialSubject
   };
 }
 
+/** Loads a stored adversarial result as a remediation subject (effective finding = original + corrections); null when not confirmable. */
+function loadRemediationSubject(cfg: Config, inventoryId: string): RemediationSubject | null {
+  let payload: any;
+  try {
+    payload = JSON.parse(readFileSync(join(cfg.resultsDir, `${inventoryId}.json`), 'utf8'));
+  } catch {
+    return null;
+  }
+  const finding = payload?.finding;
+  const adversarial = payload?.adversarial;
+  if (finding == null || adversarial?.verdict == null || !isConfirmingVerdict(adversarial.verdict)) {
+    return null;
+  }
+  return {
+    verdict: adversarial.verdict,
+    finding: { ...finding, ...(adversarial.corrections ?? {}) },
+    adversarialRationale: String(adversarial.rationale ?? ''),
+    primaryEvidence: String(payload.evidence ?? ''),
+    notes: String(payload.notes ?? ''),
+  };
+}
+
 export async function run(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
   if (args.help) {
@@ -299,10 +339,11 @@ export async function run(argv: string[]): Promise<void> {
   if (args.maxSteps != null) cfg.maxSteps = args.maxSteps;
   if (args.tokenBudget != null) cfg.tokenBudget = args.tokenBudget;
   const adversaryEnabled = cfg.adversaryModel !== '';
+  const remediationEnabled = cfg.remediationModel !== '';
 
-  // Default selection: pending items plus rows awaiting an adversarial pass.
+  // Default selection: pending items plus rows awaiting either follow-up stage.
   if (args.statuses.length === 0 && args.ids.size === 0) {
-    args.statuses = ['not_started', cfg.preliminaryStatus];
+    args.statuses = ['not_started', cfg.preliminaryStatus, cfg.remediationStatus];
   }
 
   const ledger = parseLedger(cfg.ledgerPath);
@@ -371,6 +412,38 @@ export async function run(argv: string[]): Promise<void> {
         );
       }
     }
+    const remediationPending = remediationEnabled
+      ? runnable.find(r => r.status === cfg.remediationStatus)
+      : undefined;
+    if (remediationPending != null) {
+      const bullet = inventory.get(remediationPending.inventory_id);
+      const subject = loadRemediationSubject(cfg, remediationPending.inventory_id);
+      if (bullet != null && subject != null) {
+        console.log(`\n===== REMEDIATION SYSTEM PROMPT (${remediationPending.inventory_id}) =====\n`);
+        console.log(
+          buildRemediationSystemPrompt({
+            revision,
+            maxSteps: cfg.remediationMaxSteps,
+            tokenBudget: cfg.remediationTokenBudget,
+            virtualRoot: cfg.virtualRoot,
+          }),
+        );
+        console.log('\n===== REMEDIATION TASK PROMPT =====\n');
+        console.log(
+          buildRemediationTaskPrompt({
+            item: remediationPending,
+            bullet: bullet?.text ?? '',
+            subject,
+            revision,
+            virtualRoot: cfg.virtualRoot,
+          }),
+        );
+      } else if (bullet != null) {
+        console.warn(
+          `\n(no adjudicated finding for ${remediationPending.inventory_id}: the remediation pass would fall back)`,
+        );
+      }
+    }
     console.log('\n(dry run: no model calls, no writes)');
     return;
   }
@@ -429,6 +502,8 @@ export async function run(argv: string[]): Promise<void> {
     outcomes: new Map<string, number>(),
     verdicts: new Map<string, number>(),
     adversarialDone: 0,
+    remediationDone: 0,
+    remediationScopes: new Map<string, number>(),
     failures: [],
   };
   const total = runnable.length;
@@ -456,6 +531,14 @@ export async function run(argv: string[]): Promise<void> {
   } else {
     console.log('Adversary: disabled (AUDIT_ADVERSARY_MODEL unset) — findings go straight to done');
   }
+  if (remediationEnabled) {
+    console.log(
+      `Remediation: ${cfg.remediationModel} (reasoning: ${cfg.remediationReasoningEffort || 'provider default'} | ` +
+        `max steps: ${cfg.remediationMaxSteps} | token budget: ${cfg.remediationTokenBudget.toLocaleString('en-US')})`,
+    );
+  } else {
+    console.log('Remediation: disabled (AUDIT_REMEDIATION_MODEL unset) — confirmed findings go straight to done');
+  }
   console.log(`Reviewing ${total} item(s). Results → ${cfg.resultsDir} | transcripts → ${cfg.transcriptsDir}\n`);
 
   const processRow = async (row: LedgerRow): Promise<void> => {
@@ -465,10 +548,13 @@ export async function run(argv: string[]): Promise<void> {
     }
     const bullet = inventory.get(row.inventory_id);
     if (bullet == null) return;
-    // Rows awaiting the adversarial pass (interrupted between stages, or
-    // re-selected by hand) go straight to stage two when it is enabled.
+    // Rows awaiting a follow-up stage (interrupted earlier, or re-selected by
+    // hand) resume straight into that stage when it is enabled.
     if (adversaryEnabled && row.status === cfg.preliminaryStatus) {
       return runAdversarialPass(row, bullet);
+    }
+    if (remediationEnabled && row.status === cfg.remediationStatus) {
+      return runRemediationPass(row, bullet);
     }
     return runPrimaryReview(row, bullet);
   };
@@ -596,6 +682,20 @@ export async function run(argv: string[]): Promise<void> {
       };
       payload.final_outcome = finalOutcomeFor(review.output.verdict);
       atomicWrite(resultPath, `${JSON.stringify(payload, null, 2)}\n`);
+
+      // A confirming verdict hands the item to the remediation designer: the
+      // result file already carries the verdict, and the status flips to the
+      // remediation status, so an interrupt at any point after this resumes
+      // with the remediation pass. Refuted/undecidable verdicts are terminal.
+      if (isConfirmingVerdict(review.output.verdict) && remediationEnabled) {
+        await persistStatus(row, cfg.remediationStatus);
+        console.log(
+          `  ${row.inventory_id} adversarial → ${review.output.verdict} (${review.steps} steps, ` +
+            `${(review.elapsedMs / 1000).toFixed(1)}s${review.attempts > 1 ? ', retried' : ''}) — remediation pass starting`,
+        );
+        return runRemediationPass(row, bullet);
+      }
+
       await persistStatus(row, cfg.doneStatus);
 
       summary.done++;
@@ -621,6 +721,105 @@ export async function run(argv: string[]): Promise<void> {
     }
   };
 
+  const runRemediationPass = async (row: LedgerRow, bullet: { text: string }): Promise<void> => {
+    const resultPath = join(cfg.resultsDir, `${row.inventory_id}.json`);
+    let payload: any;
+    try {
+      payload = JSON.parse(readFileSync(resultPath, 'utf8'));
+    } catch {
+      payload = undefined;
+    }
+    const finding = payload?.finding;
+    const adversarial = payload?.adversarial;
+    if (payload == null || finding == null) {
+      console.warn(
+        `  ${row.inventory_id}: no stored finding in ${resultPath} — falling back to primary re-run`,
+      );
+      return runPrimaryReview(row, bullet);
+    }
+    if (adversarial?.verdict == null || !isConfirmingVerdict(adversarial.verdict)) {
+      if (adversarial?.verdict == null && adversaryEnabled) {
+        console.warn(
+          `  ${row.inventory_id}: no stored adversarial verdict — re-running the adversarial pass`,
+        );
+        return runAdversarialPass(row, bullet);
+      }
+      // A non-confirming verdict is already terminal; finish the row as-is.
+      console.warn(
+        `  ${row.inventory_id}: verdict ${adversarial?.verdict ?? 'none'} requires no remediation — marking done`,
+      );
+      await persistStatus(row, cfg.doneStatus);
+      summary.done++;
+      return;
+    }
+
+    // The effective finding — the primary finding with the adversarial
+    // corrections applied — is what the remediation designer targets.
+    const subject: RemediationSubject = {
+      verdict: adversarial.verdict,
+      finding: { ...finding, ...(adversarial.corrections ?? {}) },
+      adversarialRationale: String(adversarial.rationale ?? ''),
+      primaryEvidence: String(payload.evidence ?? ''),
+      notes: String(payload.notes ?? ''),
+    };
+    const deps: RemediationDeps = {
+      model: provider(cfg.remediationModel),
+      modelId: cfg.remediationModel,
+      fs: fsTools,
+      revision,
+      maxSteps: cfg.remediationMaxSteps,
+      tokenBudget: cfg.remediationTokenBudget,
+      virtualRoot: cfg.virtualRoot,
+      transcriptsDir: cfg.transcriptsDir,
+      abortSignal: hardAbort.signal,
+      reasoningEffort: cfg.remediationReasoningEffort,
+      providerOptionsKey: cfg.providerName,
+    };
+
+    try {
+      const review = await limit(cfg.remediationModel, async () => {
+        if (stopping) throw new InterruptedRowError();
+        return remediationReview(row, bullet.text, subject, deps);
+      });
+      payload.remediation = {
+        remediations: review.output.remediations,
+        evidence: review.output.evidence,
+        notes: review.output.notes ?? null,
+        based_on_verdict: adversarial.verdict,
+        model: cfg.remediationModel,
+        reasoning_effort: cfg.remediationReasoningEffort || null,
+        attempts: review.attempts,
+        steps: review.steps,
+        usage: review.usage,
+        elapsed_ms: review.elapsedMs,
+        finished_at: new Date().toISOString(),
+      };
+      atomicWrite(resultPath, `${JSON.stringify(payload, null, 2)}\n`);
+      await persistStatus(row, cfg.doneStatus);
+
+      summary.done++;
+      summary.inputTokens += review.usage.inputTokens;
+      summary.outputTokens += review.usage.outputTokens;
+      const primary = review.output.remediations.find(r => r.primaryRecommendation);
+      const scope = primary?.scope ?? 'unknown';
+      summary.remediationScopes.set(scope, (summary.remediationScopes.get(scope) ?? 0) + 1);
+      console.log(
+        `[${summary.done + summary.failed}/${total}] ${row.inventory_id} → remediation ` +
+          `(${review.output.remediations.length} option(s), primary scope: ${scope}; ` +
+          `${review.steps} steps, ${(review.elapsedMs / 1000).toFixed(1)}s${review.attempts > 1 ? ', retried' : ''})`,
+      );
+    } catch (error) {
+      if (error instanceof InterruptedRowError) {
+        summary.skipped++;
+        return;
+      }
+      summary.failed++;
+      const message = error instanceof Error ? error.message : String(error);
+      summary.failures.push({ id: `${row.inventory_id} (remediation)`, error: message });
+      console.error(`[${summary.done + summary.failed}/${total}] ${row.inventory_id} REMEDIATION FAILED: ${message}`);
+    }
+  };
+
   try {
     await Promise.all(runnable.map(row => processRow(row)));
   } finally {
@@ -630,9 +829,14 @@ export async function run(argv: string[]): Promise<void> {
   const elapsedS = (Date.now() - startedAt) / 1000;
   const outcomes = [...summary.outcomes.entries()].map(([k, v]) => `${k}=${v}`).join(' ') || 'none';
   const verdicts = [...summary.verdicts.entries()].map(([k, v]) => `${k}=${v}`).join(' ') || 'none';
+  const remediationScopes =
+    [...summary.remediationScopes.entries()].map(([k, v]) => `${k}=${v}`).join(' ') || 'none';
   console.log('\n===== SUMMARY =====');
   console.log(`Done: ${summary.done}/${total} | failed: ${summary.failed} | skipped after interrupt: ${summary.skipped} | missing bullet: ${missingBullets.length}`);
   console.log(`Outcomes: ${outcomes}${summary.adversarialDone > 0 ? ` | adversarial verdicts: ${verdicts}` : ''}`);
+  if (summary.remediationDone > 0) {
+    console.log(`Remediations (primary scope): ${remediationScopes}`);
+  }
   console.log(
     `Tokens: ${summary.inputTokens.toLocaleString('en-US')} in / ${summary.outputTokens.toLocaleString('en-US')} out | wall time: ${elapsedS.toFixed(0)}s` +
       (summary.done > 0 ? ` | ${(summary.done / Math.max(elapsedS / 60, 1e-9)).toFixed(1)} items/min` : ''),

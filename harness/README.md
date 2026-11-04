@@ -6,8 +6,11 @@ four read-only tools (`read_file`, `read_dir`, `grep`, `glob`) sandboxed to the
 audit workspace, and finishes with a `submit_review` tool call whose input is
 validated against the ReviewResult schema. When a review reports a finding, an
 optional second stage puts that finding on trial: a stronger adversarial
-reviewer re-derives the evidence and returns a verdict (see
-[Adversarial pass](#adversarial-pass)).
+reviewer re-derives the evidence and returns a verdict. When a verdict
+confirms the finding, an optional third stage designs 1-3 remediation options
+(exactly one primary, each scoped by invasiveness) so findings can be triaged
+by ROI — see [Adversarial pass](#adversarial-pass) and
+[Remediation pass](#remediation-pass).
 
 Built directly on the Vercel AI SDK (`ai`) with an OpenAI-compatible provider,
 so any inexpensive tool-calling endpoint works (Fireworks, Together, Groq,
@@ -52,17 +55,25 @@ bun run start                             # everything pending, critical-first
    re-examines the finding before the row becomes `done`. An interrupt or
    failure between the stages leaves the row at `preliminary_finding`, and
    the next launch resumes with the adversarial pass directly.
-5. **Write** — on completion (and only then):
+5. **Remediation pass (optional)** — when the adversarial verdict confirms
+   the finding (`upheld`/`overstated`/`understated`) and
+   `AUDIT_REMEDIATION_MODEL` is set, the row moves to `remediation_needed`
+   (configurable via `AUDIT_REMEDIATION_STATUS`) and a remediation designer
+   proposes 1-3 fixes (exactly one primary) before the row becomes `done`.
+   Refuted/undecidable verdicts finish the row directly.
+6. **Write** — on completion (and only then):
    - `results/<inventory_id>.json` — the full review output plus metadata
-     (model, usage, steps, elapsed, revision), and — after an adversarial
-     pass — the `adversarial` verdict block and derived `final_outcome`.
+     (model, usage, steps, elapsed, revision), — after an adversarial
+     pass — the `adversarial` verdict block and derived `final_outcome`,
+     and — after a remediation pass — the `remediation` plan block.
    - the ledger row's `status` becomes `done` (configurable via
      `AUDIT_DONE_STATUS`). No other ledger field is ever touched; the ledger
      rewrite is atomic (tmp + rename) and byte-identical otherwise.
    - `transcripts/<inventory_id>.jsonl` — per-step tool calls, truncated tool
      outputs, usage, and the final result; the evidence trail for each review.
      The adversarial pass writes `transcripts/<inventory_id>.adversary.jsonl`
-     with the same event shapes.
+     and the remediation pass `transcripts/<inventory_id>.remediation.jsonl`,
+     both with the same event shapes.
 
 Failed items keep their previous status (so they re-run next launch) and are
 listed in the end-of-run summary.
@@ -99,6 +110,45 @@ is finished:
 
 Cost note: adversarial spend scales with the finding rate — each finding pays
 for a second full review pass, on a stronger (pricier) model.
+
+## Remediation pass
+
+When `AUDIT_REMEDIATION_MODEL` is set (empty = disabled, confirmed findings
+finish at `done` after the adversarial pass), every confirming verdict —
+`upheld`, `overstated`, or `understated` — gets a third stage before the row
+is finished:
+
+1. The row moves to `remediation_needed`
+   (`AUDIT_REMEDIATION_STATUS`) after the adversarial verdict is recorded, so
+   an interrupt between the stages resumes with the remediation pass.
+2. The remediation designer — with its own step/token budget
+   (`AUDIT_REMEDIATION_MAX_STEPS`, `AUDIT_REMEDIATION_TOKEN_BUDGET`) and
+   reasoning effort (`AUDIT_REMEDIATION_REASONING_EFFORT`) — receives the
+   **effective finding**: the primary finding with the adversarial
+   corrections applied, so it remediates what was actually adjudicated.
+   Same four read-only tools, fresh context, a solution-design mandate (not
+   re-litigation): ground every proposal in the actual source, prefer the
+   least invasive option that genuinely restores the violated invariant, offer
+   2-3 options only when genuinely distinct approaches exist, and mark as
+   primary the option that most holistically restores the invariant at
+   acceptable cost.
+3. Each option carries: a short `title`; a 2-5 paragraph `description`
+   (what to change, where exactly, why it restores the invariant); a `scope`
+   on the invasiveness ladder (`targeted` < `single-file` < `multi-file` <
+   `requires-redesign`); optional `tradeOffs` (when to prefer it) and
+   `residualRisk` (what it deliberately leaves unfixed). Documented design
+   exposures still get 1-3 options — "accept or tighten the documented
+   bound" is a valid `requires-redesign` remediation.
+4. Exactly one option must be marked `primaryRecommendation` (enforced in
+   cross-checks, retried with a corrective note otherwise). The plan is merged
+   into `results/<inventory_id>.json` under `remediation` (with
+   `based_on_verdict`), and only then does the row become `done`.
+
+The ROI cut for post-processing is a join of the ledger's `criticality` with
+the primary remediation's `scope`: a critical finding whose primary fix is
+`targeted` is an immediate, cheap win; a critical finding that
+`requires-redesign` needs scheduling and design discussion. Cost note: each
+confirmed finding now pays for three model passes in total.
 
 ## Pausing and resuming
 
@@ -188,10 +238,15 @@ model fails to produce a schema-valid result.
   "final_outcome": "reviewed_no_finding",   // finding_upheld | finding_overstated |
                                           // finding_understated | finding_refuted |
                                           // needs_validation (after adversarial pass)
-  "adversarial": null                      // verdict block, only when the pass ran:
-                                          // { verdict, rationale, evidence,
-                                          //   corrections, experiment, notes,
-                                          //   model, reasoning_effort, usage, … }
+  "adversarial": null,                      // verdict block, only when the pass ran:
+                                            // { verdict, rationale, evidence,
+                                            //   corrections, experiment, notes,
+                                            //   model, reasoning_effort, usage, … }
+  "remediation": null                       // plan block, only when the pass ran:
+                                            // { remediations: [{ title,
+                                            //   primaryRecommendation, description,
+                                            //   scope, tradeOffs?, residualRisk? }],
+                                            //   based_on_verdict, model, usage, … }
 }
 ```
 
@@ -226,6 +281,7 @@ Layout:
 | `src/agent-loop.ts` | the shared tool-loop agent core (guards, reminders, repair, retry) |
 | `src/agent.ts` | the primary reviewer: ReviewResult schema + cross-checks |
 | `src/adversary.ts` | the adversarial reviewer: verdict schema + cross-checks |
+| `src/remediation.ts` | the remediation designer: plan schema + cross-checks |
 | `src/driver.ts` | CLI, semaphore, SIGINT drain, lock, persistence, summary |
 | `src/main.ts` | entry point |
 
@@ -246,6 +302,7 @@ instructions live.
   intentionally left for your post-processing merge; the harness only owns
   `status`. The adversarial verdict lives in `results/<id>.json`
   (`adversarial.verdict`, `final_outcome`), not in the ledger.
-- The adversarial reviewer is only as good as the model you point it at; set
-  `AUDIT_ADVERSARY_MODEL` to something stronger than the primary reviewer or
-  leave it empty to skip the stage entirely.
+- The adversarial and remediation reviewers are only as good as the models you
+  point them at; set `AUDIT_ADVERSARY_MODEL` / `AUDIT_REMEDIATION_MODEL` to
+  something stronger than the primary reviewer, or leave them empty to skip the
+  stages entirely. Each confirmed finding pays for three model passes in total.

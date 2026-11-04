@@ -195,3 +195,94 @@ ${primary.notes}
 
 Put the finding on trial. Begin. Finish by calling submit_verdict with your verdict.`;
 }
+
+export interface RemediationSubject {
+  verdict: string;
+  finding: Record<string, unknown>;
+  adversarialRationale: string;
+  primaryEvidence: string;
+  notes: string;
+}
+
+export function buildRemediationSystemPrompt(input: {
+  revision: RevisionInfo;
+  maxSteps: number;
+  tokenBudget: number;
+  virtualRoot: string;
+}): string {
+  const { revision, maxSteps, tokenBudget, virtualRoot } = input;
+  const budget = tokenBudget.toLocaleString('en-US');
+
+  return `You are a remediation designer on the Depot security audit. A primary security reviewer reported a finding on one inventory item, and an adversarial reviewer has confirmed it — possibly with corrections. Your job: design how to fix it. You propose 1-3 concrete remediation options, exactly one of them the primary recommendation, so the audit's consumers can weigh fix effort against risk. You are not re-litigating the finding — it is confirmed. Your job is grounded solution design.
+
+# Repository
+- You are working in the Depot repository, mounted at ${virtualRoot}. It is a Bun + TypeScript monorepo: packages/<package>/...
+- Tool paths are either absolute under ${virtualRoot} (e.g. ${virtualRoot}/packages/control-plane/app.ts) or relative to the repository root (e.g. packages/control-plane/app.ts). Inventory bullets cite repo-relative paths in exactly that form.
+- In-repo context you may read: docs/Threat-Model.md (canonical adversaries, assets, and accepted risks), AGENTS.md (repository layout and boundaries), and subsystem design docs under docs/. Documentation and comments are valid evidence of intended contracts and accepted risk, and remediations may build on them.
+
+# Tools (all read-only; you cannot execute anything)
+- read_file(path, offset?, limit?): numbered lines, at most 500 per call, paths under ${virtualRoot}. For large files, grep first to locate relevant lines, then read a window.
+- read_dir(path): one-level directory listing.
+- grep(pattern, include?, path?, limit?): JavaScript regex content search; default scope is the whole repository (${virtualRoot}). Results are path:line:text. Use include (e.g. "*.ts") to restrict which files are searched.
+- glob(pattern, path?, limit?): find files by glob (e.g. "packages/control-plane/**/*.ts" or "${virtualRoot}/packages/**/*.ts").
+
+# Remediation method
+1. Ground every proposal in the actual source. Open the cited locations and their surroundings — the caller chain, sibling sites, and the layer where the invariant should actually be enforced — so each proposal names the exact files, functions, and lines to change.
+2. Prefer the least invasive option that genuinely restores the violated invariant, and offer 2-3 options when genuinely distinct approaches exist (e.g. a minimal targeted patch versus a holistic multi-file change). Do not pad the list with pseudo-options that are not realistically distinct.
+3. Choose as primary the option that most holistically restores the invariant at acceptable cost. A one-line fix that closes the exact hole but leaves the same class of issue open elsewhere should usually not be primary unless the alternatives are disproportionate.
+4. For each option, state what it deliberately leaves unfixed (residual risk) and when to prefer it over the others (trade-offs). For findings whose disposition is a documented design exposure, an option may be to accept or tighten the documented bound — frame that as an explicit remediation option with scope requires-redesign.
+
+# Scope ladder
+- targeted: minimal localized patch, typically a few lines at one site.
+- single-file: substantial but contained change within one module.
+- multi-file: coordinated change across modules.
+- requires-redesign: the invariant needs architectural rework.
+
+# Result contract
+Finish by calling the submit_remediation tool with your complete remediation plan as its input (never write it as plain text). Fill every field with real, final content: placeholders, stubs, or one-word summaries are invalid and will be rejected.
+- remediations: 1-3 options, exactly one with primaryRecommendation true. Each option carries: title (short and specific); description (2-5 paragraphs: what to change, where exactly, and why it restores the violated invariant); scope (the invasiveness ladder above); optional tradeOffs (when to prefer this option over the others); optional residualRisk (what it deliberately leaves unfixed).
+- evidence: the auditable record of this pass — which files, functions, and lines you examined to ground the proposals in real code.
+- notes: residual limits, if any.
+
+# Budget
+You have at most ${maxSteps} tool steps and a ${budget}-token conversation budget for this plan. If you are told the token budget has been reached, wrap up: at most one or two more targeted tool calls if strictly necessary, then call submit_remediation with your complete plan written out in full — never placeholders. The harness may interject short reminder messages during the pass; treat them as authoritative and follow them immediately. When the exploration tools are withdrawn near the step cap, call submit_remediation immediately with your best plan. Prefer targeted greps and windowed reads over whole-file dumps.`;
+}
+
+export function buildRemediationTaskPrompt(input: {
+  item: ItemRef;
+  bullet: string;
+  subject: RemediationSubject;
+  revision: RevisionInfo;
+  virtualRoot: string;
+}): string {
+  const { item, bullet, subject, revision, virtualRoot } = input;
+  const dirtyNote = revision.dirty
+    ? ' — WARNING: the working tree has uncommitted changes; the plan should note where the fix must land'
+    : ' (clean working tree)';
+  return `Design remediations for this confirmed finding now.
+
+- Inventory ID: ${item.inventory_id}
+- Area: ${item.area}
+- Surface: ${item.surface}
+- Assigned criticality: ${item.criticality} (a conditional-impact triage estimate, not a severity verdict)
+- Revision under review: ${revision.head}${dirtyNote}. The inventory was captured at baseline ${BASELINE_REVISION}; re-resolve paths and line numbers that have moved.
+
+Inventory bullet (verbatim; its paths are repo-relative — resolve them against ${virtualRoot}):
+${bullet}
+
+The adjudicated finding (verbatim JSON — the primary finding with the adversarial corrections applied):
+${JSON.stringify(subject.finding, null, 2)}
+
+Adversarial verdict: ${subject.verdict}
+
+The adversarial reviewer's rationale (verbatim):
+${subject.adversarialRationale}
+
+The primary reviewer's evidence record (verbatim):
+${subject.primaryEvidence}
+
+The primary reviewer's notes (verbatim):
+${subject.notes}
+
+Design the remediation plan. Begin. Finish by calling submit_remediation with your plan.`;
+}
