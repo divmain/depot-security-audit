@@ -27,6 +27,8 @@ export interface Config {
   /** Status recorded between the primary review and the adversarial pass. */
   preliminaryStatus: string;
   concurrency: number;
+  /** Per-model concurrency overrides: exact model ID → limit. */
+  concurrencyOverrides: Map<string, number>;
   maxSteps: number;
   tokenBudget: number;
   doneStatus: string;
@@ -51,6 +53,25 @@ function intEnv(name: string, fallback: number): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+/**
+ * Parses AUDIT_CONCURRENCY_OVERRIDES: comma-separated `model-id=limit` pairs,
+ * e.g. `accounts/fireworks/models/glm-5p3=4`. Malformed entries are skipped.
+ */
+function parseConcurrencyOverrides(raw: string): Map<string, number> {
+  const overrides = new Map<string, number>();
+  for (const pair of raw.split(',')) {
+    const entry = pair.trim();
+    if (entry === '') continue;
+    const eq = entry.indexOf('=');
+    const modelId = eq > 0 ? entry.slice(0, eq).trim() : '';
+    const limit = eq > 0 ? Number.parseInt(entry.slice(eq + 1), 10) : Number.NaN;
+    if (modelId !== '' && Number.isFinite(limit) && limit > 0) {
+      overrides.set(modelId, limit);
+    }
+  }
+  return overrides;
+}
+
 export function loadConfig(): Config {
   const model = strEnv('AUDIT_MODEL');
   const models: ModelConfig = {
@@ -71,6 +92,7 @@ export function loadConfig(): Config {
     adversaryTokenBudget: intEnv('AUDIT_ADVERSARY_TOKEN_BUDGET', 200_000),
     preliminaryStatus: strEnv('AUDIT_PRELIMINARY_STATUS', 'preliminary_finding'),
     concurrency: intEnv('AUDIT_CONCURRENCY', 8),
+    concurrencyOverrides: parseConcurrencyOverrides(strEnv('AUDIT_CONCURRENCY_OVERRIDES')),
     maxSteps: intEnv('AUDIT_MAX_STEPS', 40),
     tokenBudget: intEnv('AUDIT_TOKEN_BUDGET', 200_000),
     doneStatus: strEnv('AUDIT_DONE_STATUS', 'done'),

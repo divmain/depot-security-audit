@@ -152,12 +152,19 @@ export async function runAgentLoop(options: AgentLoopOptions): Promise<AgentLoop
     const announced = { wrapUp: false, forceSubmit: false };
     // Count of wrap-up reminders injected past the token budget (this attempt).
     let reminderCount = 0;
+    const lastMessage = lastError == null ? '' : lastError instanceof Error ? lastError.message : String(lastError);
+    // Some model families submit literal placeholder values in tool calls, expecting
+    // a follow-up turn to refine them; make it explicit that there is none.
+    const placeholderNote = /placeholder/i.test(lastMessage)
+      ? ` Your previous attempt submitted placeholder values. The ${options.submitToolName} call is the final, ` +
+        'recorded output — there is no follow-up turn to refine it. Write out the complete final content in the call itself.'
+      : '';
     const correction =
       lastError == null
         ? ''
-        : `\n\nNOTE: your previous attempt failed to produce a valid ${options.resultNoun} (${
-            lastError instanceof Error ? lastError.message : String(lastError)
-          }). Explore less if needed, then call ${options.submitToolName} with your final ${options.resultNoun}, filling every field with real content — no placeholders.`;
+        : `\n\nNOTE: your previous attempt failed to produce a valid ${options.resultNoun} (${lastMessage}). ` +
+          `Explore less if needed, then call ${options.submitToolName} with your final ${options.resultNoun}, ` +
+          `filling every field with real content — no placeholders.${placeholderNote}`;
 
     try {
       const result = await generateText({

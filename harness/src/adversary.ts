@@ -180,7 +180,9 @@ export async function adversarialReview(
     submitToolDescription:
       'Submit your final verdict and end the adversarial pass. Call this exactly once, after your ' +
       'verification is complete. The input is the full verdict object from the result contract: verdict, ' +
-      'rationale, evidence, corrections (when disputing the finding), experiment (when undecidable), and optional notes.',
+      'rationale, evidence, corrections (when disputing the finding), experiment (when undecidable), and optional notes. ' +
+      'The input is recorded verbatim as the final result — there is no follow-up turn to refine it, ' +
+      'so never submit placeholder values.',
     submitSchema: adversarialSchema,
     resultNoun: 'adversarial verdict',
     systemPrompt,

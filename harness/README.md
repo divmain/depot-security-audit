@@ -113,12 +113,19 @@ for a second full review pass, on a stronger (pricier) model.
 
 ## Concurrency
 
-One item = at most one in-flight model call, so the item semaphore is exactly
-the inference-call limit. The queue saturates all `AUDIT_CONCURRENCY` slots and
-backfills immediately when a call finishes — no scheduler, no idle slots.
-Transient provider errors get the SDK's built-in retry with backoff
-(`maxRetries: 2`) plus one full per-item retry when the model fails to produce
-a schema-valid result.
+Inference calls are limited **per model**: every distinct model ID in use — the
+primary reviewer, per-criticality overrides, and the adversarial reviewer —
+gets its own pool of `AUDIT_CONCURRENCY` slots, so a slow or expensive model
+(e.g. every finding paying for an adversarial pass) never starves the others'
+queues. Total in-flight calls can therefore reach
+`AUDIT_CONCURRENCY × (models in use)`; set
+`AUDIT_CONCURRENCY_OVERRIDES=model-id=limit,...` (exact model IDs,
+comma-separated) to cap a specific model below the default. The queue
+saturates each model's slots and backfills immediately when a call finishes.
+One item holds at most one model slot at a time (primary and adversarial
+stages are sequential). Transient provider errors get the SDK's built-in
+retry with backoff (`maxRetries: 2`) plus one full per-item retry when the
+model fails to produce a schema-valid result.
 
 ## Cost controls
 

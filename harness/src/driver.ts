@@ -42,7 +42,7 @@ Selection (defaults to status=not_started plus rows awaiting an adversarial pass
   --limit N              Stop after N items
 
 Execution:
-  --concurrency N        Max simultaneous inference calls (default: AUDIT_CONCURRENCY or 8)
+  --concurrency N        Max simultaneous inference calls per model (default: AUDIT_CONCURRENCY or 8)
   --max-steps N          Per-item model step cap (default: AUDIT_MAX_STEPS or 40)
   --token-budget N       Conversation-size budget; on reaching it the reviewer is told to wrap up and submit (default: AUDIT_TOKEN_BUDGET or 200000)
 
@@ -165,6 +165,23 @@ function semaphore(limit: number) {
   };
 }
 
+/**
+ * Per-model semaphore pools: each distinct model ID gets its own limit (the
+ * default, or its override), so calls to one model never contend with calls to
+ * another. Total in-flight calls can reach limit × (models in use).
+ */
+export function semaphoreMap(defaultLimit: number, overrides: Map<string, number>) {
+  const pools = new Map<string, ReturnType<typeof semaphore>>();
+  return async <T>(modelId: string, task: () => Promise<T>): Promise<T> => {
+    let pool = pools.get(modelId);
+    if (pool == null) {
+      pool = semaphore(overrides.get(modelId) ?? defaultLimit);
+      pools.set(modelId, pool);
+    }
+    return pool(task);
+  };
+}
+
 function getRevisionInfo(repoDir: string): RevisionInfo {
   const head = Bun.spawnSync({ cmd: ['git', '-C', repoDir, 'rev-parse', 'HEAD'], stdout: 'pipe', stderr: 'pipe' });
   const status = Bun.spawnSync({ cmd: ['git', '-C', repoDir, 'status', '--porcelain'], stdout: 'pipe', stderr: 'pipe' });
@@ -249,6 +266,9 @@ function printPlan(
     );
   }
 }
+
+/** A row skipped because the run is draining (SIGINT); not a failure. */
+class InterruptedRowError extends Error {}
 
 /** Loads a stored primary result and returns it as an adversarial subject; null when missing or not a finding. */
 function loadPrimaryResult(cfg: Config, inventoryId: string): AdversarialSubject | null {
@@ -413,15 +433,20 @@ export async function run(argv: string[]): Promise<void> {
   };
   const total = runnable.length;
   const startedAt = Date.now();
-  const limit = semaphore(cfg.concurrency);
+  const limit = semaphoreMap(cfg.concurrency, cfg.concurrencyOverrides);
 
+  const concurrencyOverridesText =
+    cfg.concurrencyOverrides.size > 0
+      ? ` (${[...cfg.concurrencyOverrides.entries()].map(([id, n]) => `${id}=${n}`).join(' ')})`
+      : '';
   console.log(
     `Model: ${cfg.models.default}` +
       (cfg.models.critical !== cfg.models.default || cfg.models.high !== cfg.models.default ||
         cfg.models.medium !== cfg.models.default || cfg.models.low !== cfg.models.default
         ? ` (overrides: critical=${cfg.models.critical} high=${cfg.models.high} medium=${cfg.models.medium} low=${cfg.models.low})`
         : '') +
-      ` | provider: ${cfg.providerName} | concurrency: ${cfg.concurrency} | max steps: ${cfg.maxSteps} | token budget: ${cfg.tokenBudget.toLocaleString('en-US')}`,
+      ` | provider: ${cfg.providerName} | concurrency: ${cfg.concurrency}/model${concurrencyOverridesText}` +
+      ` | max steps: ${cfg.maxSteps} | token budget: ${cfg.tokenBudget.toLocaleString('en-US')}`,
   );
   if (adversaryEnabled) {
     console.log(
@@ -464,7 +489,12 @@ export async function run(argv: string[]): Promise<void> {
     };
 
     try {
-      const review = await reviewItem(row, bullet.text, deps);
+      const review = await limit(modelId, async () => {
+        // Re-check after slot acquisition so a draining run skips queued rows
+        // without spending inference calls (mirrors the old global gate).
+        if (stopping) throw new InterruptedRowError();
+        return reviewItem(row, bullet.text, deps);
+      });
       const payload = {
         inventory_id: row.inventory_id,
         area: row.area,
@@ -506,6 +536,10 @@ export async function run(argv: string[]): Promise<void> {
           ` (${review.steps} steps, ${(review.elapsedMs / 1000).toFixed(1)}s${review.attempts > 1 ? ', retried' : ''})`,
       );
     } catch (error) {
+      if (error instanceof InterruptedRowError) {
+        summary.skipped++;
+        return;
+      }
       summary.failed++;
       const message = error instanceof Error ? error.message : String(error);
       summary.failures.push({ id: row.inventory_id, error: message });
@@ -540,7 +574,10 @@ export async function run(argv: string[]): Promise<void> {
     };
 
     try {
-      const review = await adversarialReview(row, bullet.text, primary, deps);
+      const review = await limit(cfg.adversaryModel, async () => {
+        if (stopping) throw new InterruptedRowError();
+        return adversarialReview(row, bullet.text, primary, deps);
+      });
       const payload = JSON.parse(readFileSync(resultPath, 'utf8'));
       payload.adversarial = {
         verdict: review.output.verdict,
@@ -573,6 +610,10 @@ export async function run(argv: string[]): Promise<void> {
           `${review.attempts > 1 ? ', retried' : ''})`,
       );
     } catch (error) {
+      if (error instanceof InterruptedRowError) {
+        summary.skipped++;
+        return;
+      }
       summary.failed++;
       const message = error instanceof Error ? error.message : String(error);
       summary.failures.push({ id: `${row.inventory_id} (adversarial)`, error: message });
@@ -581,7 +622,7 @@ export async function run(argv: string[]): Promise<void> {
   };
 
   try {
-    await Promise.all(runnable.map(row => limit(() => processRow(row))));
+    await Promise.all(runnable.map(row => processRow(row)));
   } finally {
     releaseLock();
   }

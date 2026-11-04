@@ -143,7 +143,9 @@ export async function reviewItem(
       'Submit your final ReviewResult and end the review of this inventory item. ' +
       'Call this exactly once, after your evidence gathering is complete. ' +
       'The input is the full ReviewResult object from the result contract: outcome, category_ids, ' +
-      'evidence, notes, optional criticality_comment, and the finding object when outcome is finding_identified.',
+      'evidence, notes, optional criticality_comment, and the finding object when outcome is finding_identified. ' +
+      'The input is recorded verbatim as the final result — there is no follow-up turn to refine it, ' +
+      'so never submit placeholder values.',
     submitSchema: reviewSchema,
     resultNoun: 'ReviewResult',
     systemPrompt,
