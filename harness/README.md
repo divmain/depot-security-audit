@@ -4,7 +4,10 @@ A Bun + TypeScript harness that drives an LLM reviewer through the items in
 `../audit-ledger.tsv`. Each item gets a fresh-context, source-only review using
 four read-only tools (`read_file`, `read_dir`, `grep`, `glob`) sandboxed to the
 audit workspace, and finishes with a `submit_review` tool call whose input is
-validated against the ReviewResult schema.
+validated against the ReviewResult schema. When a review reports a finding, an
+optional second stage puts that finding on trial: a stronger adversarial
+reviewer re-derives the evidence and returns a verdict (see
+[Adversarial pass](#adversarial-pass)).
 
 Built directly on the Vercel AI SDK (`ai`) with an OpenAI-compatible provider,
 so any inexpensive tool-calling endpoint works (Fireworks, Together, Groq,
@@ -33,24 +36,69 @@ bun run start                             # everything pending, critical-first
    embedded verbatim** (classification never depends on the model choosing to
    read it), plus *exactly one* verbatim inventory bullet from
    `audit-inventory.md`. The 2.8 MB inventory file itself is never in context.
-3. **Review** — one `generateText` call per item: tool loop for exploration,
-   `Output.object` for the final `ReviewResult` schema, `stopWhen` step cap,
-   `prepareStep` budget guard, and `repairToolCall` for malformed tool inputs.
+3. **Review** — one `generateText` call per item on the shared agent loop
+   (`src/agent-loop.ts`): tool loop for exploration, a terminal
+   `submit_review` tool call for the structured `ReviewResult`, `stopWhen`
+   step cap, `prepareStep` budget guards, and `repairToolCall` for
+   malformed tool inputs.
    Fresh context per item by construction; nothing carries over. The system
    prompt is identical across items (~81 KB), so providers with prompt caching
    cache it as a stable prefix and only the per-item user message is billed
    uncached.
-4. **Write** — on completion (and only then):
+4. **Adversarial pass (optional)** — when the primary review reports
+   `finding_identified` and `AUDIT_ADVERSARY_MODEL` is set, the row first
+   moves to `preliminary_finding` (configurable via
+   `AUDIT_PRELIMINARY_STATUS`) and a second, stronger model adversarially
+   re-examines the finding before the row becomes `done`. An interrupt or
+   failure between the stages leaves the row at `preliminary_finding`, and
+   the next launch resumes with the adversarial pass directly.
+5. **Write** — on completion (and only then):
    - `results/<inventory_id>.json` — the full review output plus metadata
-     (model, usage, steps, elapsed, revision).
+     (model, usage, steps, elapsed, revision), and — after an adversarial
+     pass — the `adversarial` verdict block and derived `final_outcome`.
    - the ledger row's `status` becomes `done` (configurable via
      `AUDIT_DONE_STATUS`). No other ledger field is ever touched; the ledger
      rewrite is atomic (tmp + rename) and byte-identical otherwise.
    - `transcripts/<inventory_id>.jsonl` — per-step tool calls, truncated tool
      outputs, usage, and the final result; the evidence trail for each review.
+     The adversarial pass writes `transcripts/<inventory_id>.adversary.jsonl`
+     with the same event shapes.
 
 Failed items keep their previous status (so they re-run next launch) and are
 listed in the end-of-run summary.
+
+## Adversarial pass
+
+When `AUDIT_ADVERSARY_MODEL` is set (empty = disabled, findings go straight to
+`done`), every `finding_identified` outcome gets a second stage before the row
+is finished:
+
+1. The primary result is written and the row moves to `preliminary_finding`
+   (`AUDIT_PRELIMINARY_STATUS`) — so an interrupt between the stages resumes
+   with the adversarial pass, never a redundant primary re-run.
+2. A second, stronger model — with its own step/token budget
+   (`AUDIT_ADVERSARY_MAX_STEPS`, `AUDIT_ADVERSARY_TOKEN_BUDGET`) and reasoning
+   effort (`AUDIT_ADVERSARY_REASONING_EFFORT`, sent as the provider's
+   `reasoning_effort`) — re-examines the finding with the same four read-only
+   tools, fresh context, and a different mandate: put the finding on trial.
+   It re-derives the claimed code path, line-verifies the cited locations,
+   hunts for mitigations the primary may have missed, and checks disposition
+   against documented intent (docs/Threat-Model.md, design docs, code
+   comments). The primary reviewer's transcript is deliberately not shared —
+   the adversary must re-derive the evidence itself.
+3. The verdict is merged into `results/<inventory_id>.json` under
+   `adversarial` (never overwriting the primary finding) and the derived
+   `final_outcome` replaces the plain outcome:
+   `upheld → finding_upheld`, `overstated → finding_overstated`,
+   `understated → finding_understated`, `refuted → finding_refuted`,
+   `undecidable → needs_validation`. Disputing verdicts must carry structured
+   `corrections` (corrected values for the disputed finding fields); an
+   `undecidable` verdict must name the decisive `experiment`.
+4. Only then does the row become `done`. A failed adversarial pass leaves the
+   row at `preliminary_finding` for the next launch.
+
+Cost note: adversarial spend scales with the finding rate — each finding pays
+for a second full review pass, on a stronger (pricier) model.
 
 ## Pausing and resuming
 
@@ -129,7 +177,14 @@ a schema-valid result.
   "usage": { "inputTokens": 0, "outputTokens": 0 },
   "elapsed_ms": 0,
   "revision": { "head": "…", "dirty": false, "baseline": "6a72e67b…" },
-  "finished_at": "…"
+  "finished_at": "…",
+  "final_outcome": "reviewed_no_finding",   // finding_upheld | finding_overstated |
+                                          // finding_understated | finding_refuted |
+                                          // needs_validation (after adversarial pass)
+  "adversarial": null                      // verdict block, only when the pass ran:
+                                          // { verdict, rationale, evidence,
+                                          //   corrections, experiment, notes,
+                                          //   model, reasoning_effort, usage, … }
 }
 ```
 
@@ -160,8 +215,10 @@ Layout:
 | `src/categories.ts` | reads `Finding-Categories.md` for verbatim embedding in the prompt |
 | `src/fs-tools.ts` | virtualized, repo-confined filesystem primitives (read/dir/grep/glob) |
 | `src/tools.ts` | AI SDK tool definitions wrapping `fs-tools` |
-| `src/prompt.ts` | system + per-item prompt assembly |
-| `src/agent.ts` | the per-item `generateText` call, budget guard, repair, transcripts |
+| `src/prompt.ts` | system + per-item prompt assembly (primary and adversarial) |
+| `src/agent-loop.ts` | the shared tool-loop agent core (guards, reminders, repair, retry) |
+| `src/agent.ts` | the primary reviewer: ReviewResult schema + cross-checks |
+| `src/adversary.ts` | the adversarial reviewer: verdict schema + cross-checks |
 | `src/driver.ts` | CLI, semaphore, SIGINT drain, lock, persistence, summary |
 | `src/main.ts` | entry point |
 
@@ -180,4 +237,8 @@ instructions live.
   schema-validated — so native JSON-schema response formats are never required.
 - `reviewer`, `reviewed_revision`, `outcome` and other ledger columns are
   intentionally left for your post-processing merge; the harness only owns
-  `status`.
+  `status`. The adversarial verdict lives in `results/<id>.json`
+  (`adversarial.verdict`, `final_outcome`), not in the ledger.
+- The adversarial reviewer is only as good as the model you point it at; set
+  `AUDIT_ADVERSARY_MODEL` to something stronger than the primary reviewer or
+  leave it empty to skip the stage entirely.

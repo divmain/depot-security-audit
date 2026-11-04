@@ -19,6 +19,13 @@ export interface Config {
   apiKey: string;
   providerName: string;
   models: ModelConfig;
+  /** Adversarial second-stage model; empty string disables the adversarial pass. */
+  adversaryModel: string;
+  adversaryReasoningEffort: string;
+  adversaryMaxSteps: number;
+  adversaryTokenBudget: number;
+  /** Status recorded between the primary review and the adversarial pass. */
+  preliminaryStatus: string;
   concurrency: number;
   maxSteps: number;
   tokenBudget: number;
@@ -58,6 +65,11 @@ export function loadConfig(): Config {
     apiKey: strEnv('AUDIT_API_KEY'),
     providerName: strEnv('AUDIT_PROVIDER_NAME', 'audit-provider'),
     models,
+    adversaryModel: strEnv('AUDIT_ADVERSARY_MODEL'),
+    adversaryReasoningEffort: strEnv('AUDIT_ADVERSARY_REASONING_EFFORT', 'high'),
+    adversaryMaxSteps: intEnv('AUDIT_ADVERSARY_MAX_STEPS', 40),
+    adversaryTokenBudget: intEnv('AUDIT_ADVERSARY_TOKEN_BUDGET', 200_000),
+    preliminaryStatus: strEnv('AUDIT_PRELIMINARY_STATUS', 'preliminary_finding'),
     concurrency: intEnv('AUDIT_CONCURRENCY', 8),
     maxSteps: intEnv('AUDIT_MAX_STEPS', 40),
     tokenBudget: intEnv('AUDIT_TOKEN_BUDGET', 200_000),

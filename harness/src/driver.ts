@@ -13,7 +13,8 @@ import { parseInventory } from './inventory';
 import { readCategoriesDocument } from './categories';
 import { createFsTools } from './fs-tools';
 import { reviewItem, type ReviewDeps } from './agent';
-import { BASELINE_REVISION, buildItemPrompt, buildSystemPrompt, type RevisionInfo } from './prompt';
+import { adversarialReview, finalOutcomeFor, type AdversarialDeps, type AdversarialSubject } from './adversary';
+import { BASELINE_REVISION, buildAdversarialSystemPrompt, buildAdversarialTaskPrompt, buildItemPrompt, buildSystemPrompt, type RevisionInfo } from './prompt';
 
 interface CliArgs {
   statuses: string[];
@@ -33,11 +34,11 @@ const HELP = `Depot audit harness — reviews audit-ledger.tsv items with a tool
 
 Usage: bun run src/main.ts [options]
 
-Selection (defaults to status=not_started, ordered critical -> high -> medium -> low):
+Selection (defaults to status=not_started plus rows awaiting an adversarial pass, ordered critical -> high -> medium -> low):
   --prefix PREFIXES      Comma-separated inventory ID prefixes, e.g. AUTH,HTTP
   --criticality BANDS    Comma-separated bands, e.g. critical,high
-  --ids IDS              Exact inventory IDs, e.g. HTTP-001,HTTP-002 (ignores default status filter)
-  --status STATUSES      Comma-separated statuses to select (default: not_started)
+  --ids IDS              Exact inventory IDs, e.g. HTTP-001,HTTP-002 (ignores the default status filter)
+  --status STATUSES      Comma-separated statuses to select (default: not_started,preliminary_finding)
   --limit N              Stop after N items
 
 Execution:
@@ -53,8 +54,13 @@ Other:
 Behavior:
   - On completion of an item: results/<inventory_id>.json is written and the ledger row's
     status becomes "done" (AUDIT_DONE_STATUS). Nothing else in the ledger is touched.
+  - When the adversarial pass is enabled (AUDIT_ADVERSARY_MODEL set) and the primary
+    review reports finding_identified, the row first moves to "preliminary_finding"
+    (AUDIT_PRELIMINARY_STATUS); the adversarial reviewer then tries to break the
+    finding and the row only becomes "done" once its verdict is recorded. Rows left
+    at preliminary_finding (interrupt or failure) resume with the adversarial pass.
   - Ctrl-C once: stop claiming new items and drain the in-flight ones (boundary-safe).
-    Ctrl-C twice: abort in-flight calls; unfinished items stay not_started and re-run later.
+    Ctrl-C twice: abort in-flight calls; unfinished items keep their current status and re-run later.
   - Failed items are left at their previous status and reported in the summary.`;
 
 function csvArg(value: string | undefined, collect: string[]): void {
@@ -135,10 +141,8 @@ export function parseArgs(argv: string[]): CliArgs {
         throw new Error(`unknown argument: ${arg}\n\n${HELP}`);
     }
   }
-  // Default to pending items; exact --ids selection is explicit and carries no status filter.
-  if (args.statuses.length === 0 && args.ids.size === 0) {
-    args.statuses = ['not_started'];
-  }
+  // Default status selection is applied in run(), once the configured preliminary
+  // status is known; exact --ids selection is explicit and carries no status filter.
   return args;
 }
 
@@ -212,6 +216,8 @@ interface Summary {
   inputTokens: number;
   outputTokens: number;
   outcomes: Map<string, number>;
+  verdicts: Map<string, number>;
+  adversarialDone: number;
   failures: Array<{ id: string; error: string }>;
 }
 
@@ -244,6 +250,23 @@ function printPlan(
   }
 }
 
+/** Loads a stored primary result and returns it as an adversarial subject; null when missing or not a finding. */
+function loadPrimaryResult(cfg: Config, inventoryId: string): AdversarialSubject | null {
+  let payload: any;
+  try {
+    payload = JSON.parse(readFileSync(join(cfg.resultsDir, `${inventoryId}.json`), 'utf8'));
+  } catch {
+    return null;
+  }
+  if (payload?.outcome !== 'finding_identified' || payload?.finding == null) return null;
+  return {
+    outcome: payload.outcome,
+    evidence: String(payload.evidence ?? ''),
+    notes: String(payload.notes ?? ''),
+    finding: payload.finding,
+  };
+}
+
 export async function run(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
   if (args.help) {
@@ -255,6 +278,12 @@ export async function run(argv: string[]): Promise<void> {
   if (args.concurrency != null) cfg.concurrency = args.concurrency;
   if (args.maxSteps != null) cfg.maxSteps = args.maxSteps;
   if (args.tokenBudget != null) cfg.tokenBudget = args.tokenBudget;
+  const adversaryEnabled = cfg.adversaryModel !== '';
+
+  // Default selection: pending items plus rows awaiting an adversarial pass.
+  if (args.statuses.length === 0 && args.ids.size === 0) {
+    args.statuses = ['not_started', cfg.preliminaryStatus];
+  }
 
   const ledger = parseLedger(cfg.ledgerPath);
   const inventory = parseInventory(cfg.inventoryPath);
@@ -289,8 +318,40 @@ export async function run(argv: string[]): Promise<void> {
       );
       console.log('\n===== ITEM PROMPT =====\n');
       console.log(buildItemPrompt({ item: row, bullet: bullet?.text ?? '', revision, virtualRoot: cfg.virtualRoot }));
-      console.log('\n(dry run: no model calls, no writes)');
     }
+    const preliminary = adversaryEnabled
+      ? runnable.find(r => r.status === cfg.preliminaryStatus)
+      : undefined;
+    if (preliminary != null) {
+      const bullet = inventory.get(preliminary.inventory_id);
+      const primary = loadPrimaryResult(cfg, preliminary.inventory_id);
+      if (bullet != null && primary != null) {
+        console.log(`\n===== ADVERSARIAL SYSTEM PROMPT (${preliminary.inventory_id}) =====\n`);
+        console.log(
+          buildAdversarialSystemPrompt({
+            revision,
+            maxSteps: cfg.adversaryMaxSteps,
+            tokenBudget: cfg.adversaryTokenBudget,
+            virtualRoot: cfg.virtualRoot,
+          }),
+        );
+        console.log('\n===== ADVERSARIAL TASK PROMPT =====\n');
+        console.log(
+          buildAdversarialTaskPrompt({
+            item: preliminary,
+            bullet: bullet?.text ?? '',
+            primary,
+            revision,
+            virtualRoot: cfg.virtualRoot,
+          }),
+        );
+      } else if (bullet != null) {
+        console.warn(
+          `\n(no stored finding for ${preliminary.inventory_id}: the adversarial pass would fall back to a primary re-run)`,
+        );
+      }
+    }
+    console.log('\n(dry run: no model calls, no writes)');
     return;
   }
 
@@ -346,6 +407,8 @@ export async function run(argv: string[]): Promise<void> {
     inputTokens: 0,
     outputTokens: 0,
     outcomes: new Map<string, number>(),
+    verdicts: new Map<string, number>(),
+    adversarialDone: 0,
     failures: [],
   };
   const total = runnable.length;
@@ -360,6 +423,14 @@ export async function run(argv: string[]): Promise<void> {
         : '') +
       ` | provider: ${cfg.providerName} | concurrency: ${cfg.concurrency} | max steps: ${cfg.maxSteps} | token budget: ${cfg.tokenBudget.toLocaleString('en-US')}`,
   );
+  if (adversaryEnabled) {
+    console.log(
+      `Adversary: ${cfg.adversaryModel} (reasoning: ${cfg.adversaryReasoningEffort || 'provider default'} | ` +
+        `max steps: ${cfg.adversaryMaxSteps} | token budget: ${cfg.adversaryTokenBudget.toLocaleString('en-US')})`,
+    );
+  } else {
+    console.log('Adversary: disabled (AUDIT_ADVERSARY_MODEL unset) — findings go straight to done');
+  }
   console.log(`Reviewing ${total} item(s). Results → ${cfg.resultsDir} | transcripts → ${cfg.transcriptsDir}\n`);
 
   const processRow = async (row: LedgerRow): Promise<void> => {
@@ -369,6 +440,15 @@ export async function run(argv: string[]): Promise<void> {
     }
     const bullet = inventory.get(row.inventory_id);
     if (bullet == null) return;
+    // Rows awaiting the adversarial pass (interrupted between stages, or
+    // re-selected by hand) go straight to stage two when it is enabled.
+    if (adversaryEnabled && row.status === cfg.preliminaryStatus) {
+      return runAdversarialPass(row, bullet);
+    }
+    return runPrimaryReview(row, bullet);
+  };
+
+  const runPrimaryReview = async (row: LedgerRow, bullet: { text: string }): Promise<void> => {
     const modelId = modelFor(cfg.models, row.criticality);
     const deps: ReviewDeps = {
       model: provider(modelId),
@@ -399,14 +479,28 @@ export async function run(argv: string[]): Promise<void> {
         elapsed_ms: review.elapsedMs,
         revision: { head: revision.head, dirty: revision.dirty, baseline: BASELINE_REVISION },
         finished_at: new Date().toISOString(),
+        final_outcome: review.output.outcome,
       };
       atomicWrite(join(cfg.resultsDir, `${row.inventory_id}.json`), `${JSON.stringify(payload, null, 2)}\n`);
-      await persistStatus(row, cfg.doneStatus);
 
-      summary.done++;
+      summary.outcomes.set(review.output.outcome, (summary.outcomes.get(review.output.outcome) ?? 0) + 1);
       summary.inputTokens += review.usage.inputTokens;
       summary.outputTokens += review.usage.outputTokens;
-      summary.outcomes.set(review.output.outcome, (summary.outcomes.get(review.output.outcome) ?? 0) + 1);
+
+      // A finding hands the item to the adversarial reviewer: the result file is
+      // already on disk and the status flips to the preliminary status, so an
+      // interrupt at any point after this resumes with the adversarial pass.
+      if (review.output.outcome === 'finding_identified' && adversaryEnabled) {
+        await persistStatus(row, cfg.preliminaryStatus);
+        console.log(
+          `  ${row.inventory_id} primary → finding_identified (${review.steps} steps, ` +
+            `${(review.elapsedMs / 1000).toFixed(1)}s${review.attempts > 1 ? ', retried' : ''}) — adversarial pass starting`,
+        );
+        return runAdversarialPass(row, bullet);
+      }
+
+      await persistStatus(row, cfg.doneStatus);
+      summary.done++;
       console.log(
         `[${summary.done + summary.failed}/${total}] ${row.inventory_id} → ${review.output.outcome}` +
           ` (${review.steps} steps, ${(review.elapsedMs / 1000).toFixed(1)}s${review.attempts > 1 ? ', retried' : ''})`,
@@ -419,6 +513,73 @@ export async function run(argv: string[]): Promise<void> {
     }
   };
 
+  const runAdversarialPass = async (row: LedgerRow, bullet: { text: string }): Promise<void> => {
+    const resultPath = join(cfg.resultsDir, `${row.inventory_id}.json`);
+    const primary = loadPrimaryResult(cfg, row.inventory_id);
+    if (primary == null) {
+      // Stage-two routing requires a stored finding; without one the only sane
+      // recovery is to re-run the primary review.
+      console.warn(
+        `  ${row.inventory_id}: no stored finding in ${resultPath} — falling back to primary re-run`,
+      );
+      return runPrimaryReview(row, bullet);
+    }
+
+    const deps: AdversarialDeps = {
+      model: provider(cfg.adversaryModel),
+      modelId: cfg.adversaryModel,
+      fs: fsTools,
+      revision,
+      maxSteps: cfg.adversaryMaxSteps,
+      tokenBudget: cfg.adversaryTokenBudget,
+      virtualRoot: cfg.virtualRoot,
+      transcriptsDir: cfg.transcriptsDir,
+      abortSignal: hardAbort.signal,
+      reasoningEffort: cfg.adversaryReasoningEffort,
+      providerOptionsKey: cfg.providerName,
+    };
+
+    try {
+      const review = await adversarialReview(row, bullet.text, primary, deps);
+      const payload = JSON.parse(readFileSync(resultPath, 'utf8'));
+      payload.adversarial = {
+        verdict: review.output.verdict,
+        rationale: review.output.rationale,
+        evidence: review.output.evidence,
+        corrections: review.output.corrections ?? null,
+        experiment: review.output.experiment ?? null,
+        notes: review.output.notes ?? null,
+        model: cfg.adversaryModel,
+        reasoning_effort: cfg.adversaryReasoningEffort || null,
+        attempts: review.attempts,
+        steps: review.steps,
+        usage: review.usage,
+        elapsed_ms: review.elapsedMs,
+        finished_at: new Date().toISOString(),
+      };
+      payload.final_outcome = finalOutcomeFor(review.output.verdict);
+      atomicWrite(resultPath, `${JSON.stringify(payload, null, 2)}\n`);
+      await persistStatus(row, cfg.doneStatus);
+
+      summary.done++;
+      summary.adversarialDone++;
+      summary.inputTokens += review.usage.inputTokens;
+      summary.outputTokens += review.usage.outputTokens;
+      const verdict = review.output.verdict;
+      summary.verdicts.set(verdict, (summary.verdicts.get(verdict) ?? 0) + 1);
+      console.log(
+        `[${summary.done + summary.failed}/${total}] ${row.inventory_id} → finding → ${verdict}` +
+          ` (adversary: ${review.steps} steps, ${(review.elapsedMs / 1000).toFixed(1)}s` +
+          `${review.attempts > 1 ? ', retried' : ''})`,
+      );
+    } catch (error) {
+      summary.failed++;
+      const message = error instanceof Error ? error.message : String(error);
+      summary.failures.push({ id: `${row.inventory_id} (adversarial)`, error: message });
+      console.error(`[${summary.done + summary.failed}/${total}] ${row.inventory_id} ADVERSARIAL FAILED: ${message}`);
+    }
+  };
+
   try {
     await Promise.all(runnable.map(row => limit(() => processRow(row))));
   } finally {
@@ -427,9 +588,10 @@ export async function run(argv: string[]): Promise<void> {
 
   const elapsedS = (Date.now() - startedAt) / 1000;
   const outcomes = [...summary.outcomes.entries()].map(([k, v]) => `${k}=${v}`).join(' ') || 'none';
+  const verdicts = [...summary.verdicts.entries()].map(([k, v]) => `${k}=${v}`).join(' ') || 'none';
   console.log('\n===== SUMMARY =====');
   console.log(`Done: ${summary.done}/${total} | failed: ${summary.failed} | skipped after interrupt: ${summary.skipped} | missing bullet: ${missingBullets.length}`);
-  console.log(`Outcomes: ${outcomes}`);
+  console.log(`Outcomes: ${outcomes}${summary.adversarialDone > 0 ? ` | adversarial verdicts: ${verdicts}` : ''}`);
   console.log(
     `Tokens: ${summary.inputTokens.toLocaleString('en-US')} in / ${summary.outputTokens.toLocaleString('en-US')} out | wall time: ${elapsedS.toFixed(0)}s` +
       (summary.done > 0 ? ` | ${(summary.done / Math.max(elapsedS / 60, 1e-9)).toFixed(1)} items/min` : ''),

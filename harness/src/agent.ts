@@ -1,21 +1,13 @@
-import { appendFileSync } from 'node:fs';
-import { join } from 'node:path';
-import {
-  generateText,
-  InvalidToolInputError,
-  isStepCount,
-  NoSuchToolError,
-  tool,
-  type LanguageModel,
-} from 'ai';
+import type { LanguageModel } from 'ai';
 import { z } from 'zod';
 import type { FsTools } from './fs-tools';
 import { buildAuditTools } from './tools';
 import { buildItemPrompt, buildSystemPrompt, type ItemRef, type RevisionInfo } from './prompt';
+import { looksLikePlaceholder, MIN_RECORD_LENGTH, runAgentLoop } from './agent-loop';
 
 const OUTCOMES = ['reviewed_no_finding', 'finding_identified', 'needs_validation'] as const;
 
-const findingSchema = z.object({
+export const findingSchema = z.object({
   title: z.string().describe('Short, specific title of the demonstrated issue.'),
   status: z
     .enum(['candidate', 'confirmed', 'documented design exposure'])
@@ -48,6 +40,8 @@ const findingSchema = z.object({
   remediation: z.string().describe('Smallest change that restores the invariant, plus compatibility constraints.'),
 });
 
+export type FindingOutput = z.infer<typeof findingSchema>;
+
 export const reviewSchema = z.object({
   outcome: z.enum(OUTCOMES).describe('reviewed_no_finding | finding_identified | needs_validation'),
   category_ids: z
@@ -66,46 +60,6 @@ export const reviewSchema = z.object({
 });
 
 export type ReviewOutput = z.infer<typeof reviewSchema>;
-
-const SUBMIT_TOOL_NAME = 'submit_review';
-
-/**
- * Floor for the evidence record. Real evidence in this harness runs to thousands
- * of characters (files/lines examined, contrasts exercised, reasoning); anything
- * this short is a stub, not an auditable record.
- */
-const MIN_EVIDENCE_LENGTH = 200;
-
-const PLACEHOLDER_PATTERN = /^(placeholder|place holder|tbd|todo|n\/?a|none|xxx|pending|\.+|…)$/i;
-
-/**
- * Free-text fields must carry real content. Under forced-finalization pressure,
- * flash-tier models fill the long free-text fields with stubs like "placeholder"
- * while still satisfying the schema — that must be rejected, not recorded.
- * Long fields are exempt: real prose may legitimately *mention* placeholders
- * (e.g. evidence quoting a placeholder literal in source code), so only short
- * values are treated as stubs.
- */
-function looksLikePlaceholder(value: string): boolean {
-  const trimmed = value.trim();
-  if (trimmed.length >= 40) return false;
-  return trimmed.length < 3 || PLACEHOLDER_PATTERN.test(trimmed) || /place ?holder|lorem ipsum/i.test(trimmed);
-}
-
-/**
- * Terminal submission tool. It has no execute on purpose: the SDK stops the tool
- * loop as soon as the model calls it, and the harness reads the ReviewResult out
- * of the call's input. This is the tool-mode structured output — it works on any
- * tool-calling model, unlike responseFormat-based structured output.
- */
-const submitReviewTool = tool({
-  description:
-    'Submit your final ReviewResult and end the review of this inventory item. ' +
-    'Call this exactly once, after your evidence gathering is complete. ' +
-    'The input is the full ReviewResult object from the result contract: outcome, category_ids, ' +
-    'evidence, notes, optional criticality_comment, and the finding object when outcome is finding_identified.',
-  inputSchema: reviewSchema,
-});
 
 export interface ItemReview {
   output: ReviewOutput;
@@ -128,50 +82,43 @@ export interface ReviewDeps {
   abortSignal: AbortSignal;
 }
 
-/** Cross-check failures and a missing, lazy, or invalid submit_review call are worth one retry with a corrective note. */
-class InvalidReviewOutputError extends Error {}
-
-const iso = (): string => new Date().toISOString();
-
-function truncate(value: unknown, max: number): string {
-  const text = typeof value === 'string' ? value : JSON.stringify(value);
-  if (text == null) return '';
-  return text.length > max ? `${text.slice(0, max)}… [truncated]` : text;
+/** Primary-reviewer cross-checks on an otherwise schema-valid ReviewResult. */
+function validateReviewOutput(output: ReviewOutput): string[] {
+  const problems: string[] = [];
+  if (output.outcome === 'finding_identified' && output.finding == null) {
+    problems.push('outcome is finding_identified but the finding object is missing');
+  }
+  if (output.category_ids.some(id => !id.startsWith('FC-'))) {
+    problems.push('category_ids must contain FC-* taxonomy IDs');
+  }
+  if (looksLikePlaceholder(output.evidence) || output.evidence.trim().length < MIN_RECORD_LENGTH) {
+    problems.push(`evidence must be the full auditable record (${MIN_RECORD_LENGTH}+ characters, no placeholders)`);
+  }
+  if (looksLikePlaceholder(output.notes)) {
+    problems.push('notes must contain real content, not a placeholder');
+  }
+  if (output.finding != null) {
+    for (const [field, value] of Object.entries(output.finding)) {
+      if (typeof value === 'string' && looksLikePlaceholder(value)) {
+        problems.push(`finding.${field} must contain real content, not a placeholder`);
+      }
+    }
+    if (output.finding.affected_inventory_ids.some(id => !/^[A-Z]+-\d+$/.test(id))) {
+      problems.push('finding.affected_inventory_ids must contain inventory IDs like HTTP-058');
+    }
+  }
+  return problems;
 }
 
 /**
- * One step's size (input+output tokens); the budget guard uses the max across
- * steps as the current conversation size. Usage shape varies across
- * providers/SDK versions; read it defensively.
- */
-function stepTokens(step: unknown): number {
-  const usage = (step as { usage?: Record<string, unknown> })?.usage;
-  if (usage == null) return 0;
-  const input = Number(usage.inputTokens ?? usage.promptTokens ?? 0) || 0;
-  const output = Number(usage.outputTokens ?? usage.completionTokens ?? 0) || 0;
-  const total = Number(usage.totalTokens ?? 0) || 0;
-  return Math.max(total, input + output);
-}
-
-function isAbortError(signal: AbortSignal): boolean {
-  return signal.aborted;
-}
-
-/**
- * Runs one inventory item as a single generateText call: tool loop for exploration,
- * a final submit_review tool call for the structured result, prepareStep as the budget guard.
- * Fresh context per item by construction — nothing is carried between items.
+ * Runs one inventory item's primary review on the shared agent loop: tool loop
+ * for exploration, a final submit_review call for the structured result.
  */
 export async function reviewItem(
   item: ItemRef,
   bullet: string,
   deps: ReviewDeps,
 ): Promise<ItemReview> {
-  const transcriptPath = join(deps.transcriptsDir, `${item.inventory_id}.jsonl`);
-  const writeLine = (obj: Record<string, unknown>): void => {
-    appendFileSync(transcriptPath, `${JSON.stringify(obj)}\n`);
-  };
-
   const systemPrompt = buildSystemPrompt({
     categoriesDocument: deps.categoriesDocument,
     revision: deps.revision,
@@ -179,268 +126,43 @@ export async function reviewItem(
     tokenBudget: deps.tokenBudget,
     virtualRoot: deps.virtualRoot,
   });
-  const baseItemPrompt = buildItemPrompt({
+  const taskPrompt = buildItemPrompt({
     item,
     bullet,
     revision: deps.revision,
     virtualRoot: deps.virtualRoot,
   });
-  const auditTools = buildAuditTools(deps.fs);
-  const explorationToolNames = new Set(Object.keys(auditTools));
-  const tools = { ...auditTools, [SUBMIT_TOOL_NAME]: submitReviewTool };
 
-  writeLine({
-    type: 'meta',
-    ts: iso(),
-    inventory_id: item.inventory_id,
-    model: deps.modelId,
+  const result = await runAgentLoop({
+    phase: 'review',
+    model: deps.model,
+    modelId: deps.modelId,
+    tools: buildAuditTools(deps.fs),
+    submitToolName: 'submit_review',
+    submitToolDescription:
+      'Submit your final ReviewResult and end the review of this inventory item. ' +
+      'Call this exactly once, after your evidence gathering is complete. ' +
+      'The input is the full ReviewResult object from the result contract: outcome, category_ids, ' +
+      'evidence, notes, optional criticality_comment, and the finding object when outcome is finding_identified.',
+    submitSchema: reviewSchema,
+    resultNoun: 'ReviewResult',
+    systemPrompt,
+    taskPrompt,
     maxSteps: deps.maxSteps,
     tokenBudget: deps.tokenBudget,
-    revision: deps.revision,
+    transcriptsDir: deps.transcriptsDir,
+    transcriptFile: `${item.inventory_id}.jsonl`,
+    abortSignal: deps.abortSignal,
+    meta: { inventory_id: item.inventory_id, revision: deps.revision },
+    validate: validateReviewOutput,
+    resultMeta: output => ({ outcome: output.outcome, category_ids: output.category_ids }),
   });
 
-  // Force submission two steps before the hard cap so the model still has room to
-  // deliver its final ReviewResult instead of being cut off mid-exploration.
-  const toolStepBudget = Math.max(1, deps.maxSteps - 2);
-  let lastError: unknown = null;
-
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    const usage = { inputTokens: 0, outputTokens: 0 };
-    const startedAt = Date.now();
-    // Guards re-apply on every step, but each activation is logged once per attempt.
-    const announced = { wrapUp: false, forceSubmit: false };
-    // Count of wrap-up reminders injected past the token budget (this attempt).
-    let reminderCount = 0;
-    const correction =
-      lastError == null
-        ? ''
-        : `\n\nNOTE: your previous attempt failed to produce a valid ReviewResult (${
-            lastError instanceof Error ? lastError.message : String(lastError)
-          }). Explore less if needed, then call submit_review with your final ReviewResult, filling every field with real content — no placeholders.`;
-
-    try {
-      const result = await generateText({
-        model: deps.model,
-        tools,
-        instructions: systemPrompt,
-        prompt: baseItemPrompt + correction,
-        stopWhen: isStepCount(deps.maxSteps),
-        maxRetries: 2,
-        abortSignal: deps.abortSignal,
-
-        // Budget guards, applied at turn boundaries:
-        // - token budget (conversation size = largest step's input+output): soft
-        //   interrupt — steer the model to wrap up; tools stay available;
-        // - step cap: hard force — only submit_review remains, so the structured
-        //   result always materializes before the SDK stops the loop.
-        prepareStep: ({ stepNumber, steps, initialInstructions, messages }: any) => {
-          const contextTokens: number = (steps as unknown[]).reduce(
-            (max: number, step: unknown) => Math.max(max, stepTokens(step)),
-            0,
-          );
-          if (stepNumber >= toolStepBudget) {
-            if (!announced.forceSubmit) {
-              announced.forceSubmit = true;
-              writeLine({ type: 'step-guard', ts: iso(), kind: 'force-submit', stepNumber });
-            }
-            return {
-              activeTools: [SUBMIT_TOOL_NAME],
-              toolChoice: { type: 'tool', toolName: SUBMIT_TOOL_NAME },
-              instructions:
-                `${initialInstructions}\n\nSTEP CAP REACHED — the exploration tools are no longer available. ` +
-                'Call submit_review now with your best ReviewResult based on the evidence you have already gathered. ' +
-                'Write the complete evidence record in full; placeholder values are rejected.',
-            };
-          }
-          if (contextTokens >= deps.tokenBudget) {
-            if (!announced.wrapUp) {
-              announced.wrapUp = true;
-              writeLine({
-                type: 'step-guard',
-                ts: iso(),
-                kind: 'wrap-up',
-                stepNumber,
-                contextTokens,
-                tokenBudget: deps.tokenBudget,
-              });
-            }
-            // Every turn past the budget gets a fresh reminder at the end of the
-            // context. Recency makes it far harder to ignore than the (carried
-            // forward) system-level wrap-up note alone, and the countdown to
-            // forced submission escalates on its own.
-            reminderCount += 1;
-            const stepsLeft = Math.max(1, toolStepBudget - stepNumber);
-            const reminder = {
-              role: 'user',
-              content:
-                `[harness reminder ${reminderCount}] The token budget has been reached and you have been asked to wrap up. ` +
-                'Be efficient: make no further tool calls unless strictly necessary, and return your complete ' +
-                'ReviewResult via submit_review now. ' +
-                `Submission will be forced after ${stepsLeft} more step${stepsLeft === 1 ? '' : 's'}.`,
-            };
-            const nextMessages: any[] = [...((messages as any[] | undefined) ?? []), reminder];
-            return {
-              instructions:
-                `${initialInstructions}\n\nTOKEN BUDGET REACHED — this conversation has grown to the per-item token budget ` +
-                `(${deps.tokenBudget.toLocaleString('en-US')} tokens). Wrap up now: at most one or two more targeted ` +
-                'tool calls if strictly necessary, then call submit_review with your complete ReviewResult written out ' +
-                'in full. Placeholder values are rejected.',
-              messages: nextMessages,
-            };
-          }
-          return undefined;
-        },
-
-        onStepEnd: (step: any) => {
-          const stepUsage = step?.usage ?? {};
-          usage.inputTokens += Number(stepUsage.inputTokens ?? stepUsage.promptTokens ?? 0) || 0;
-          usage.outputTokens += Number(stepUsage.outputTokens ?? stepUsage.completionTokens ?? 0) || 0;
-          writeLine({
-            type: 'step',
-            ts: iso(),
-            attempt,
-            stepNumber: step?.stepNumber,
-            finishReason: step?.finishReason,
-            usage: stepUsage,
-            toolCalls: (step?.toolCalls ?? []).map((call: any) => ({
-              name: call?.toolName,
-              input: call?.input ?? call?.args,
-            })),
-            toolResults: (step?.toolResults ?? []).map((res: any) => ({
-              name: res?.toolName,
-              output: truncate(res?.output ?? res?.result, 600),
-            })),
-          });
-        },
-
-        // Weak models emit invalid tool inputs more often; repair once instead of
-        // burning a whole step on a failed call. The repair itself also runs in
-        // tool mode: only the broken tool is offered and the call is forced, so
-        // the corrected input arrives as a schema-validated tool call.
-        repairToolCall: async ({ toolCall, tools: toolSet, error }: any) => {
-          if (error != null && NoSuchToolError.isInstance(error)) return null;
-          if (error == null || !InvalidToolInputError.isInstance(error)) return null;
-          const definition = (toolSet as Record<string, any>)[toolCall.toolName];
-          if (definition == null) return null;
-          try {
-            const { steps: repairSteps } = await generateText({
-              model: deps.model,
-              tools: { [toolCall.toolName]: definition },
-              toolChoice: 'required',
-              prompt: [
-                `A model tried to call the tool "${toolCall.toolName}" with input that failed schema validation.`,
-                `Attempted input: ${truncate(toolCall.input, 800)}`,
-                'Call the tool now with the corrected input. Fix only what is invalid and keep the intent.',
-              ].join('\n'),
-            });
-            const repairedCalls = (repairSteps as any[]).flatMap(step => step?.toolCalls ?? []);
-            const repaired = repairedCalls[repairedCalls.length - 1]?.input;
-            if (repaired == null) return null;
-            const check = (definition.inputSchema as any)?.safeParse?.(repaired);
-            if (check != null && !check.success) return null;
-            writeLine({
-              type: 'tool-repair',
-              ts: iso(),
-              toolName: toolCall.toolName,
-              attempted: truncate(toolCall.input, 400),
-              repaired,
-            });
-            return { ...toolCall, input: JSON.stringify(repaired) };
-          } catch {
-            return null;
-          }
-        },
-      });
-
-      // Tool-mode extraction: the ReviewResult is the input of the last
-      // submit_review call. A run that never called it, called it without any
-      // exploration, or called it with invalid input is retried with a note.
-      const allToolCalls = (result.steps as unknown[]).flatMap(
-        (step: any) => step?.toolCalls ?? [],
-      );
-      const submitCall = [...allToolCalls]
-        .reverse()
-        .find((call: any) => call?.toolName === SUBMIT_TOOL_NAME);
-      if (submitCall == null) {
-        throw new InvalidReviewOutputError(
-          'the review ended without calling submit_review; finish by calling submit_review with your final ReviewResult',
-        );
-      }
-      const explored = allToolCalls.some((call: any) => explorationToolNames.has(call?.toolName));
-      if (!explored) {
-        throw new InvalidReviewOutputError(
-          'submit_review was called without any source exploration; examine the relevant files with the read tools first',
-        );
-      }
-      const parsed = reviewSchema.safeParse(submitCall.input ?? submitCall.args);
-      if (!parsed.success) {
-        const issues = parsed.error.issues
-          .slice(0, 5)
-          .map(issue => `${issue.path.join('.')}: ${issue.message}`)
-          .join('; ');
-        throw new InvalidReviewOutputError(
-          `submit_review input failed ReviewResult schema validation: ${issues}`,
-        );
-      }
-      const output = parsed.data as ReviewOutput;
-
-      const problems: string[] = [];
-      if (output.outcome === 'finding_identified' && output.finding == null) {
-        problems.push('outcome is finding_identified but the finding object is missing');
-      }
-      if (output.category_ids.some(id => !id.startsWith('FC-'))) {
-        problems.push('category_ids must contain FC-* taxonomy IDs');
-      }
-      if (looksLikePlaceholder(output.evidence) || output.evidence.trim().length < MIN_EVIDENCE_LENGTH) {
-        problems.push(`evidence must be the full auditable record (${MIN_EVIDENCE_LENGTH}+ characters, no placeholders)`);
-      }
-      if (looksLikePlaceholder(output.notes)) {
-        problems.push('notes must contain real content, not a placeholder');
-      }
-      if (output.finding != null) {
-        for (const [field, value] of Object.entries(output.finding)) {
-          if (typeof value === 'string' && looksLikePlaceholder(value)) {
-            problems.push(`finding.${field} must contain real content, not a placeholder`);
-          }
-        }
-        if (output.finding.affected_inventory_ids.some(id => !/^[A-Z]+-\d+$/.test(id))) {
-          problems.push('finding.affected_inventory_ids must contain inventory IDs like HTTP-058');
-        }
-      }
-      if (problems.length > 0) {
-        throw new InvalidReviewOutputError(problems.join('; '));
-      }
-
-      const review: ItemReview = {
-        output,
-        attempts: attempt,
-        steps: result.steps.length,
-        usage,
-        elapsedMs: Date.now() - startedAt,
-      };
-      writeLine({
-        type: 'result',
-        ts: iso(),
-        attempts: review.attempts,
-        steps: review.steps,
-        usage: review.usage,
-        outcome: review.output.outcome,
-        category_ids: review.output.category_ids,
-        reminders: reminderCount,
-      });
-      return review;
-    } catch (error) {
-      lastError = error;
-      writeLine({
-        type: 'attempt-error',
-        ts: iso(),
-        attempt,
-        error: truncate(error instanceof Error ? error.message : String(error), 800),
-      });
-      if (isAbortError(deps.abortSignal)) throw error;
-      if (!(error instanceof InvalidReviewOutputError)) throw error;
-    }
-  }
-
-  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+  return {
+    output: result.output as ReviewOutput,
+    attempts: result.attempts,
+    steps: result.steps,
+    usage: result.usage,
+    elapsedMs: result.elapsedMs,
+  };
 }

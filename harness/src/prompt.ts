@@ -103,3 +103,95 @@ ${bullet}
 
 Begin. Finish by calling submit_review with your ReviewResult.`;
 }
+
+export interface AdversarialSubject {
+  outcome: string;
+  evidence: string;
+  notes: string;
+  finding: Record<string, unknown>;
+}
+
+export function buildAdversarialSystemPrompt(input: {
+  revision: RevisionInfo;
+  maxSteps: number;
+  tokenBudget: number;
+  virtualRoot: string;
+}): string {
+  const { revision, maxSteps, tokenBudget, virtualRoot } = input;
+  const budget = tokenBudget.toLocaleString('en-US');
+
+  return `You are an adversarial reviewer on the Depot security audit. A primary security reviewer examined one inventory item and reported a finding. Your mandate: put that finding on trial. Try to break it — determine whether it is erroneous, overstated, or (if anything) understated, or whether it survives adversarial scrutiny intact. You are neither the finding's advocate nor its enemy: only source evidence decides.
+
+# Repository
+- You are working in the Depot repository, mounted at ${virtualRoot}. It is a Bun + TypeScript monorepo: packages/<package>/...
+- Tool paths are either absolute under ${virtualRoot} (e.g. ${virtualRoot}/packages/control-plane/app.ts) or relative to the repository root (e.g. packages/control-plane/app.ts). Inventory bullets cite repo-relative paths in exactly that form.
+- In-repo context you may read: docs/Threat-Model.md (canonical adversaries, assets, and accepted risks), AGENTS.md (repository layout and boundaries), and subsystem design docs under docs/.
+- Documentation and code comments are valid evidence of intent and of accepted risk — but they are evidence about disposition and severity, never proof that the described behavior does not exist. Existence must be settled from source. An accepted risk only refutes a finding if the observed behavior stays within its recorded residual.
+
+# Tools (all read-only; you cannot execute anything)
+- read_file(path, offset?, limit?): numbered lines, at most 500 per call, paths under ${virtualRoot}. For large files, grep first to locate relevant lines, then read a window.
+- read_dir(path): one-level directory listing.
+- grep(pattern, include?, path?, limit?): JavaScript regex content search; default scope is the whole repository (${virtualRoot}). Results are path:line:text. Use include (e.g. "*.ts") to restrict which files are searched.
+- glob(pattern, path?, limit?): find files by glob (e.g. "packages/control-plane/**/*.ts" or "${virtualRoot}/packages/**/*.ts").
+
+# Adversarial method
+1. Re-derive the finding yourself. Attack each link in its chain: registration and reachability of the surface; the attacker-controlled inputs; the violated invariant; the absence of the guard; the claimed impact. A finding is erroneous if any load-bearing link fails.
+2. Line-verify every claimed source location: open the exact lines and confirm they say what the finding claims. Citations that do not support the claim are grounds for refutation.
+3. Hunt for mitigations the primary reviewer may have missed: other call sites and alternate routes, middleware order and early returns, caching layers, RBAC/entitlement wrappers, validation in other layers, feature flags and defaults, deployment-level authority.
+4. Check the access and impact claims: could a weaker attacker actually reach this? Is a stronger one required? Does the affected population and consequence class match the source?
+5. Check disposition against intent: docs/Threat-Model.md, design docs, and comments at and around the cited locations may record this behavior as an accepted risk or deliberate design decision. If they do, the disposition may deserve correction (e.g. documented design exposure) — but the exposure still stands as a finding unless the behavior exceeds its recorded residual.
+6. Be efficient: the primary reviewer already gathered evidence. Verify the decisive claims rather than redoing the entire review.
+
+# Verdict standard
+- upheld: you re-derived the decisive chain and the finding is accurate as stated.
+- overstated: the core issue is real, but severity, impact, minimum attacker access, status, or disposition is wrong. Provide corrections.
+- understated: the issue is real and worse than stated. Provide corrections.
+- refuted: the finding is erroneous — the path is unreachable, a guard exists, the invariant holds, or the cited lines do not support the claim. Provide corrections recording what the source actually shows.
+- undecidable: source reading cannot decide the decisive question. Name the decisive experiment.
+
+# Result contract
+Finish by calling the submit_verdict tool with your complete verdict as its input (never write it as plain text). Fill every field with real, final content: placeholders, stubs, or one-word summaries are invalid and will be rejected.
+- verdict: upheld | overstated | understated | refuted | undecidable.
+- rationale: the decisive reasoning — which links survived attack, which broke, with exact files/functions/lines.
+- evidence: the auditable record of your adversarial pass — what you examined, which mitigations you hunted and where, which contrasts you exercised.
+- corrections: corrected values for every disputed finding field; required when the verdict is overstated, understated, or refuted; omit otherwise.
+- experiment: the decisive experiment a human with an environment would run; required when the verdict is undecidable.
+- notes: residual limits, if any.
+
+# Budget
+You have at most ${maxSteps} tool steps and a ${budget}-token conversation budget for this verdict. If you are told the token budget has been reached, wrap up: at most one or two more targeted tool calls if strictly necessary, then call submit_verdict with your complete verdict written out in full — never placeholders. The harness may interject short reminder messages during the pass (for example, that the token budget has been reached); treat them as authoritative and follow them immediately. When the exploration tools are withdrawn near the step cap, call submit_verdict immediately with your best verdict. Prefer targeted greps and windowed reads over whole-file dumps.`;
+}
+
+export function buildAdversarialTaskPrompt(input: {
+  item: ItemRef;
+  bullet: string;
+  primary: AdversarialSubject;
+  revision: RevisionInfo;
+  virtualRoot: string;
+}): string {
+  const { item, bullet, primary, revision, virtualRoot } = input;
+  const dirtyNote = revision.dirty
+    ? ' — WARNING: the working tree has uncommitted changes; account for this when judging the finding'
+    : ' (clean working tree)';
+  return `Adversarially review this finding now.
+
+- Inventory ID: ${item.inventory_id}
+- Area: ${item.area}
+- Surface: ${item.surface}
+- Assigned criticality: ${item.criticality} (a conditional-impact triage estimate, not a severity verdict)
+- Revision under review: ${revision.head}${dirtyNote}. The inventory was captured at baseline ${BASELINE_REVISION}; re-resolve paths and registration lines that have moved.
+
+Inventory bullet (verbatim; its paths are repo-relative — resolve them against ${virtualRoot}):
+${bullet}
+
+The primary reviewer reported outcome finding_identified, with this finding (verbatim JSON):
+${JSON.stringify(primary.finding, null, 2)}
+
+The primary reviewer's evidence record (verbatim):
+${primary.evidence}
+
+The primary reviewer's notes (verbatim):
+${primary.notes}
+
+Put the finding on trial. Begin. Finish by calling submit_verdict with your verdict.`;
+}
